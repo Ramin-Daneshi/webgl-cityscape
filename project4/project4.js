@@ -1,11 +1,11 @@
-// Author: Ramin Daneshi
+// Author: Ramin Daneshi, Arif Bashar
 // Assignment: Project 4
 // Class: CSCI 4250
 // Due: 11/6/20
 
 var canvas, gl;
 
-var numVertices  = 150; // 12 vertices for 3D pyramid
+var numVertices  = 150+120; // 12 vertices for 3D pyramid
 var pointsArray = [];
 var colorsArray = [];
 var normalsArray = [];
@@ -71,7 +71,39 @@ var vertices = [
         vec4(-10, -0.5, -9, 1),    // F(29)
         vec4(-3, -0.5, -9, 1),    // G(30)
         vec4(-3, 10, -9, 1),    // H(31)
-        vec4(-10, 10, -9, 1)     // J(32)
+        vec4(-10, 10, -9, 1),     // J(32)
+
+        // tower 2
+        vec4(-11, -0.7, -6, 1),   // A(33) bottom
+        vec4(-5, -0.7, -6, 1),   // B(34) bottom
+        vec4(-5, 6.0, -6, 1),   // C(35) top
+        vec4(-7.5, 6.2, -6, 1), // D(36) top pointy
+        vec4(-11, 8.5, -6, 1),    // E(37) top
+        vec4(-11, -0.7, 1, 1),    // F(38) bottom
+        vec4(-5, -0.7, 1, 1),    // G(39) bottom
+        vec4(-5, 6.0, 1, 1),    // H(40) top
+        vec4(-7.5, 6.2, 1, 1),  // I(41) top pointy
+        vec4(-11, 8.5, 1, 1),     // J(42) top
+
+        // car2 body
+        vec4(-2.3,  0,  1, 1.0 ),  // A (43) 
+        vec4( 3,  0.1,  1, 1.0 ),  // B (44)  
+        vec4(-2.5, -0.7,  1, 1.0 ),  // C (45)  
+        vec4( 2.5, -0.7,  1, 1.0 ), // D (46)  
+        vec4( -2.3, 0, -2, 1.0 ), // E (47)  
+        vec4( 3,  0.1, -2, 1.0 ), // F (48) 
+        vec4( -2.5,-0.7, -2, 1.0 ), // G (49) 
+        vec4( 2.5, -0.7, -2, 1.0 ),  // H (50) 
+
+        // car2 trapezoid
+        vec4(0,  0.7,  1, 1.0 ),  // I(51)
+        vec4( 2,  0.7,  1, 1.0 ),  // J(52)
+        vec4(-1, 0,  1, 1.0 ),  // K(53)
+        vec4( 3, 0.1,  1, 1.0 ), // L(54)
+        vec4( 0, 0.7, -2, 1.0 ), // M(55)
+        vec4( 2,  0.7, -2, 1.0 ), // N(56)
+        vec4( -1,0, -2, 1.0 ),  // O(57)
+        vec4( 3, 0.1, -2, 1.0 ),  // P(58)
     ];
 
 
@@ -116,6 +148,38 @@ var vertexColors = [
         vec4( 1.0, 1.0, 0.0, 1.0 ),  // yellow (6 left) 
         vec4( 1.0, 0.0, 0.0, 1.0 ),  // red (0 front)
         vec4( 0.8, 0.8, 0.2, 1.0 ),  // yellowish-green (1) 32
+
+        // tower 2
+        vec4( 1.0, 0.0, 0.0, 1.0 ),  // red (0 front)
+        vec4( 0.8, 0.8, 0.2, 1.0 ),  // yellowish-green (1)
+        vec4( 0.0, 1.0, 0.0, 1.0 ),  // green (2)
+        vec4( 0.0, 0.0, 1.0, 1.0 ),  // blue (3 right)
+        vec4( 1.0, 0.0, 1.0, 1.0 ),  // magenta (4)
+        vec4( 0.0, 1.0, 1.0, 1.0 ),  // cyan (5 top)
+        vec4( 1.0, 1.0, 0.0, 1.0 ),  // yellow (6 left) 
+        vec4( 1.0, 0.0, 0.0, 1.0 ),  // red (0 front)
+        vec4( 0.8, 0.8, 0.2, 1.0 ),  // yellowish-green (1)
+        vec4( 0.8, 0.8, 0.2, 1.0 ),  // yellowish-green (1) 42
+
+        // car2 bottom
+        vec4( 1.0, 0.0, 0.0, 1.0 ),  // red (0 front)
+        vec4( 0.8, 0.8, 0.2, 1.0 ),  // yellowish-green (1)
+        vec4( 0.0, 1.0, 0.0, 1.0 ),  // green (2)
+        vec4( 0.0, 0.0, 1.0, 1.0 ),  // blue (3 right)
+        vec4( 1.0, 0.0, 1.0, 1.0 ),  // magenta (4)
+        vec4( 0.0, 1.0, 1.0, 1.0 ),  // cyan (5 top)
+        vec4( 1.0, 1.0, 0.0, 1.0 ),  // yellow (6 left)
+        vec4( 1.0, 0.0, 0.0, 1.0 ),  // red (7 front) 50
+
+        // car2 top
+        vec4( 1.0, 0.0, 0.0, 1.0 ),  // red (0 front)
+        vec4( 0.8, 0.8, 0.2, 1.0 ),  // yellowish-green (1)
+        vec4( 0.0, 1.0, 0.0, 1.0 ),  // green (2)
+        vec4( 0.0, 0.0, 1.0, 1.0 ),  // blue (3 right)
+        vec4( 1.0, 0.0, 1.0, 1.0 ),  // magenta (4)
+        vec4( 0.0, 1.0, 1.0, 1.0 ),  // cyan (5 top)
+        vec4( 1.0, 1.0, 0.0, 1.0 ),  // yellow (6 left) 
+        vec4( 1.0, 0.0, 0.0, 1.0 ),  // red (0 front) 58
     ];
 
 
@@ -248,6 +312,24 @@ function GenerateCar() {
     quad( 19, 17, 21, 23 ); // bottom (LKOP) green
     quad( 19, 18, 22, 23 ); // top (NJLP) cyan   HDBF
     // ends at index 107
+
+    // car2 bottom
+    quad( 43, 44, 46, 45 );  // front(ABDC) red
+    quad( 47, 48, 50, 49 );  // back(EFHG)  magenta
+    quad( 46, 44, 48, 50 );  // right (DBFH) blue
+    quad( 49, 45, 43, 47 );  // left (GCAE) yellow
+    quad( 45, 49, 50, 46 ); // bottom (CGHD) green
+    quad( 48, 47, 43, 44); // top (AEFB) cyan
+    // ends at index 143
+
+    // car2 top
+    quad( 51, 52, 54, 53 );  // front(IJLK) red
+    quad( 52, 51, 55, 56 );  // back(JIMN)  magenta
+    quad( 55, 56, 58, 57 );  // right (MNPO) blue
+    quad( 53, 51, 55, 57 );  // left (OKIM) yellow   GCAE
+    quad( 54, 53, 57, 58 ); // bottom (LKOP) green
+    quad( 56, 52, 54, 58); // top (NJLP) cyan   HDBF
+    // ends at index 179
 }
 
 function GenerateTower()
@@ -260,11 +342,22 @@ function GenerateTower()
     quad(26, 25, 24, 28); // back
     // ends at index 138
     
+    
     triangle(31, 32, 27); // front triangle
     triangle(26, 31, 27);   // right triangle
     triangle(28, 26, 27); // back triangle
     triangle(32, 28, 27); // left triangle
     // ends at index 150
+
+
+    // tower 2
+    quad(33, 38, 42, 37);
+    quad(36, 37, 42, 41);
+    quad(35, 36, 41, 40);
+    quad(34, 35, 40, 39);
+    quad(33, 34, 39, 38);
+    pentagon (38, 39, 40, 41, 42);
+    pentagon (33, 37, 36, 35, 34);
 }
 
 
