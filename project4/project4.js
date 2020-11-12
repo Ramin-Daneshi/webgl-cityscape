@@ -256,13 +256,12 @@ var vertexColors = [
         vec4( 1.0, 0.0, 0.0, 1.0 ),  // red (0 front) 58
     ];
 
-var verts = []
 //Sets up the vertices array so the pawn can be drawn
 function SurfaceRevPoints()
 {
 	//Setup initial points matrix
 	for (var i = 0; i<9; i++) {
-		verts.push(vec4(pawnPoints[i][0], pawnPoints[i][1], pawnPoints[i][2], 1));
+		vertices.push(vec4(pawnPoints[i][0], pawnPoints[i][1], pawnPoints[i][2], 1));
 	}
 
 	var r;
@@ -273,9 +272,9 @@ function SurfaceRevPoints()
         var angle = (j+1)*t; 
 
         // for each sweeping step, generate 25 new points corresponding to the original points
-		for(var i = 0; i < 9; i++ ) {	
-		    r = verts[i][0];
-            verts.push(vec4(r*Math.cos(angle), verts[i][1], -r*Math.sin(angle), 1));
+		for(var i = 59; i < 68; i++ ) {	
+		    r = vertices[i][0];
+            vertices.push(vec4(r*Math.cos(angle), vertices[i][1], -r*Math.sin(angle), 1));
 		}    	
 	}
 
@@ -287,9 +286,8 @@ function SurfaceRevPoints()
     //               |              |
     //            i*N+j --------(i+1)*N+j
     // define each quad in counter-clockwise rotation of the vertices
-    vertices = vertices.concat(vertices, verts);
     for (var i=0; i<24; i++) { // slices
-        for (var j=0; j<8; j++) { // layers
+        for (var j=59; j<67; j++) { // layers
             pawnQuad(i*N+j, (i+1)*N+j, (i+1)*N+(j+1), i*N+(j+1)); 
         }
     }    
@@ -336,28 +334,28 @@ function pawnQuad(a, b, c, d) {
     //var normal = Newell(indices);
 
     // triangle a-b-c
-    pointsArray.push(verts[a]); 
+    pointsArray.push(vertices[a]); 
     colorsArray.push(vec4( 0.0, 0.0, 1.0, 1.0 ));
     //normalsArray.push(normal); 
 
-    pointsArray.push(verts[b]); 
+    pointsArray.push(vertices[b]); 
     colorsArray.push(vec4( 0.0, 0.0, 1.0, 1.0 ));
     //normalsArray.push(normal); 
 
-    pointsArray.push(verts[c]); 
+    pointsArray.push(vertices[c]); 
     colorsArray.push(vec4( 0.0, 0.0, 1.0, 1.0 ));
     //normalsArray.push(normal);   
 
     // triangle a-c-d
-    pointsArray.push(verts[a]);  
+    pointsArray.push(vertices[a]);  
     colorsArray.push(vec4( 0.0, 0.0, 1.0, 1.0 ));
     //normalsArray.push(normal); 
 
-    pointsArray.push(verts[c]); 
+    pointsArray.push(vertices[c]); 
     colorsArray.push(vec4( 0.0, 0.0, 1.0, 1.0 ));
     //normalsArray.push(normal); 
 
-    pointsArray.push(verts[d]); 
+    pointsArray.push(vertices[d]); 
     colorsArray.push(vec4( 0.0, 0.0, 1.0, 1.0 ));
     //normalsArray.push(normal);    
 }
