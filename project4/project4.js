@@ -5,7 +5,7 @@
 
 var canvas, gl;
 
-var numVertices  = 150+120; // 12 vertices for 3D pyramid
+var numVertices  = 150+120+1152; // 12 vertices for 3D pyramid
 var pointsArray = [];
 var colorsArray = [];
 var normalsArray = [];
@@ -104,8 +104,22 @@ var vertices = [
         vec4( 2,  0.7, -2, 1.0 ), // N(56)
         vec4( -1,0, -2, 1.0 ),  // O(57)
         vec4( 3, 0.1, -2, 1.0 ),  // P(58)
+
     ];
 
+var pawnPoints = [
+    // pawn
+    [.032, .380, 0.0],
+    [.043, .410, 0.0],
+    [.058, .425, 0.0],
+    [.066, .433, 0.0],
+    [.069, .447, 0.0],
+    [.093, .465, 0.0],
+    [.107, .488, 0.0],
+    [.106, .512, 0.0],
+    [.115, .526, 0.0],
+    [0, .525, 0.0],
+];
 
 var vertexColors = [
         // car bottom
@@ -180,7 +194,106 @@ var vertexColors = [
         vec4( 0.0, 1.0, 1.0, 1.0 ),  // cyan (5 top)
         vec4( 1.0, 1.0, 0.0, 1.0 ),  // yellow (6 left) 
         vec4( 1.0, 0.0, 0.0, 1.0 ),  // red (0 front) 58
+
+        // pawn
+        vec4( 1.0, 0.0, 0.0, 1.0 ),  // red (0 front)
+        vec4( 0.8, 0.8, 0.2, 1.0 ),  // yellowish-green (1)
+        vec4( 0.0, 1.0, 0.0, 1.0 ),  // green (2)
+        vec4( 0.0, 0.0, 1.0, 1.0 ),  // blue (3 right)
+        vec4( 1.0, 0.0, 1.0, 1.0 ),  // magenta (4)
+        vec4( 0.0, 1.0, 1.0, 1.0 ),  // cyan (5 top)
+        vec4( 1.0, 1.0, 0.0, 1.0 ),  // yellow (6 left) 
+        vec4( 1.0, 0.0, 0.0, 1.0 ),  // red (0 front) 58
+        vec4( 1.0, 0.0, 0.0, 1.0 ),  // red (0 front)
+        vec4( 0.8, 0.8, 0.2, 1.0 ),  // yellowish-green (1)
+        vec4( 0.0, 1.0, 0.0, 1.0 ),  // green (2)
+        vec4( 0.0, 0.0, 1.0, 1.0 ),  // blue (3 right)
+        vec4( 1.0, 0.0, 1.0, 1.0 ),  // magenta (4)
+        vec4( 0.0, 1.0, 1.0, 1.0 ),  // cyan (5 top)
+        vec4( 1.0, 1.0, 0.0, 1.0 ),  // yellow (6 left) 
+        vec4( 1.0, 0.0, 0.0, 1.0 ),  // red (0 front) 58
+        vec4( 1.0, 0.0, 0.0, 1.0 ),  // red (0 front)
+        vec4( 0.8, 0.8, 0.2, 1.0 ),  // yellowish-green (1)
+        vec4( 0.0, 1.0, 0.0, 1.0 ),  // green (2)
+        vec4( 0.0, 0.0, 1.0, 1.0 ),  // blue (3 right)
+        vec4( 1.0, 0.0, 1.0, 1.0 ),  // magenta (4)
+        vec4( 0.0, 1.0, 1.0, 1.0 ),  // cyan (5 top)
+        vec4( 1.0, 1.0, 0.0, 1.0 ),  // yellow (6 left) 
+        vec4( 1.0, 0.0, 0.0, 1.0 ),  // red (0 front) 58
+        vec4( 1.0, 0.0, 0.0, 1.0 ),  // red (0 front)
+        vec4( 0.8, 0.8, 0.2, 1.0 ),  // yellowish-green (1)
+        vec4( 0.0, 1.0, 0.0, 1.0 ),  // green (2)
+        vec4( 0.0, 0.0, 1.0, 1.0 ),  // blue (3 right)
+        vec4( 1.0, 0.0, 1.0, 1.0 ),  // magenta (4)
+        vec4( 0.0, 1.0, 1.0, 1.0 ),  // cyan (5 top)
+        vec4( 1.0, 1.0, 0.0, 1.0 ),  // yellow (6 left) 
+        vec4( 1.0, 0.0, 0.0, 1.0 ),  // red (0 front) 58
+        vec4( 0.0, 0.0, 1.0, 1.0 ),  // blue (3 right)
+        vec4( 1.0, 0.0, 1.0, 1.0 ),  // magenta (4)
+        vec4( 0.0, 1.0, 1.0, 1.0 ),  // cyan (5 top)
+        vec4( 1.0, 1.0, 0.0, 1.0 ),  // yellow (6 left) 
+        vec4( 1.0, 0.0, 0.0, 1.0 ),  // red (0 front) 58
+        vec4( 1.0, 0.0, 0.0, 1.0 ),  // red (0 front)
+        vec4( 0.8, 0.8, 0.2, 1.0 ),  // yellowish-green (1)
+        vec4( 0.0, 1.0, 0.0, 1.0 ),  // green (2)
+        vec4( 0.0, 0.0, 1.0, 1.0 ),  // blue (3 right)
+        vec4( 1.0, 0.0, 1.0, 1.0 ),  // magenta (4)
+        vec4( 0.0, 1.0, 1.0, 1.0 ),  // cyan (5 top)
+        vec4( 1.0, 1.0, 0.0, 1.0 ),  // yellow (6 left) 
+        vec4( 1.0, 0.0, 0.0, 1.0 ),  // red (0 front) 58
+        vec4( 0.0, 0.0, 1.0, 1.0 ),  // blue (3 right)
+        vec4( 1.0, 0.0, 1.0, 1.0 ),  // magenta (4)
+        vec4( 0.0, 1.0, 1.0, 1.0 ),  // cyan (5 top)
+        vec4( 1.0, 1.0, 0.0, 1.0 ),  // yellow (6 left) 
+        vec4( 1.0, 0.0, 0.0, 1.0 ),  // red (0 front) 58
+        vec4( 1.0, 0.0, 0.0, 1.0 ),  // red (0 front)
+        vec4( 0.8, 0.8, 0.2, 1.0 ),  // yellowish-green (1)
+        vec4( 0.0, 1.0, 0.0, 1.0 ),  // green (2)
+        vec4( 0.0, 0.0, 1.0, 1.0 ),  // blue (3 right)
+        vec4( 1.0, 0.0, 1.0, 1.0 ),  // magenta (4)
+        vec4( 0.0, 1.0, 1.0, 1.0 ),  // cyan (5 top)
+        vec4( 1.0, 1.0, 0.0, 1.0 ),  // yellow (6 left) 
+        vec4( 1.0, 0.0, 0.0, 1.0 ),  // red (0 front) 58
     ];
+
+var verts = []
+//Sets up the vertices array so the pawn can be drawn
+function SurfaceRevPoints()
+{
+	//Setup initial points matrix
+	for (var i = 0; i<9; i++) {
+		verts.push(vec4(pawnPoints[i][0], pawnPoints[i][1], pawnPoints[i][2], 1));
+	}
+
+	var r;
+    var t=Math.PI/12;
+
+    // sweep the original curve another "angle" degree
+	for (var j = 0; j < 24; j++) {
+        var angle = (j+1)*t; 
+
+        // for each sweeping step, generate 25 new points corresponding to the original points
+		for(var i = 0; i < 9; i++ ) {	
+		    r = verts[i][0];
+            verts.push(vec4(r*Math.cos(angle), verts[i][1], -r*Math.sin(angle), 1));
+		}    	
+	}
+
+    var N=9; 
+    // quad strips are formed slice by slice (not layer by layer)
+    //          ith slice      (i+1)th slice
+    //            i*N+(j+1)-----(i+1)*N+(j+1)
+    //               |              |
+    //               |              |
+    //            i*N+j --------(i+1)*N+j
+    // define each quad in counter-clockwise rotation of the vertices
+    vertices = vertices.concat(vertices, verts);
+    for (var i=0; i<24; i++) { // slices
+        for (var j=0; j<8; j++) { // layers
+            pawnQuad(i*N+j, (i+1)*N+j, (i+1)*N+(j+1), i*N+(j+1)); 
+        }
+    }    
+}
 
 
 // quad uses first index to set color for face
@@ -215,6 +328,38 @@ function quad(a, b, c, d) {
     pointsArray.push(vertices[d]); 
     colorsArray.push(vertexColors[a]);
     // normalsArray.push(normal);    
+}
+
+function pawnQuad(a, b, c, d) {
+
+    var indices=[a, b, c, d];
+    //var normal = Newell(indices);
+
+    // triangle a-b-c
+    pointsArray.push(verts[a]); 
+    colorsArray.push(vec4( 0.0, 0.0, 1.0, 1.0 ));
+    //normalsArray.push(normal); 
+
+    pointsArray.push(verts[b]); 
+    colorsArray.push(vec4( 0.0, 0.0, 1.0, 1.0 ));
+    //normalsArray.push(normal); 
+
+    pointsArray.push(verts[c]); 
+    colorsArray.push(vec4( 0.0, 0.0, 1.0, 1.0 ));
+    //normalsArray.push(normal);   
+
+    // triangle a-c-d
+    pointsArray.push(verts[a]);  
+    colorsArray.push(vec4( 0.0, 0.0, 1.0, 1.0 ));
+    //normalsArray.push(normal); 
+
+    pointsArray.push(verts[c]); 
+    colorsArray.push(vec4( 0.0, 0.0, 1.0, 1.0 ));
+    //normalsArray.push(normal); 
+
+    pointsArray.push(verts[d]); 
+    colorsArray.push(vec4( 0.0, 0.0, 1.0, 1.0 ));
+    //normalsArray.push(normal);    
 }
 
 function pentagon(a, b, c, d, e) {
@@ -281,6 +426,27 @@ function triangle(a, b, c) {
     pointsArray.push(vertices[c]); 
     colorsArray.push(vertexColors[a]);
     // normalsArray.push(normal);   
+}
+
+function Newell(indices)
+{
+   var L=indices.length;
+   var x=0, y=0, z=0;
+   var index, nextIndex;
+
+   for (var i=0; i<L; i++) {
+       index=indices[i];
+       nextIndex = indices[(i+1)%L];
+       
+       x += (vertices[index][1] - vertices[nextIndex][1])*
+            (vertices[index][2] + vertices[nextIndex][2]);
+       y += (vertices[index][2] - vertices[nextIndex][2])*
+            (vertices[index][0] + vertices[nextIndex][0]);
+       z += (vertices[index][0] - vertices[nextIndex][0])*
+            (vertices[index][1] + vertices[nextIndex][1]);
+   }
+
+   return (normalize(vec3(x, y, z)));
 }
 
 // Each face is formed with two triangles
@@ -399,8 +565,9 @@ window.onload = function init() {
     var program = initShaders( gl, "vertex-shader", "fragment-shader" );
     gl.useProgram( program );
 
-    GenerateCar();  // generate the points for the car and floor
+    //GenerateCar();  // generate the points for the car and floor
     GenerateTower(); // generate the points for the tower
+    SurfaceRevPoints(); // generate pawn
 
     var cBuffer = gl.createBuffer();
     gl.bindBuffer( gl.ARRAY_BUFFER, cBuffer );
@@ -515,4 +682,13 @@ var render = function() {
     gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
 
     gl.drawArrays( gl.TRIANGLES, 0, numVertices );
+}
+
+
+function scale4(a, b, c) {
+    var result = mat4();
+    result[0][0] = a;
+    result[1][1] = b;
+    result[2][2] = c;
+    return result;
 }
