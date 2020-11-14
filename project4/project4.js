@@ -9,7 +9,6 @@ var numVertices  = 150+120+1152; // 12 vertices for 3D pyramid
 var pointsArray = [];
 var colorsArray = [];
 var normalsArray = [];
-var modelViewStack=[];
 
 // Variables that control the orthographic projection bounds.
 var y_max = 5;
@@ -19,8 +18,9 @@ var x_min = -8;
 var near = -50;
 var far = 50;
 
-
-var modelViewMatrix, projectionMatrix;
+var modelViewStack=[];
+var modelViewMatrix = mat4();
+var projectionMatrix;
 var modelViewMatrixLoc, projectionMatrixLoc;
 
 
@@ -87,24 +87,24 @@ var vertices = [
         vec4(-11, 8.5, 1, 1),     // J(42) top
 
         // car2 body
-        vec4(-2.3,  0,  1, 1.0 ),  // A (43) 
-        vec4( 3,  0.1,  1, 1.0 ),  // B (44)  
-        vec4(-2.5, -0.7,  1, 1.0 ),  // C (45)  
-        vec4( 2.5, -0.7,  1, 1.0 ), // D (46)  
-        vec4( -2.3, 0, -2, 1.0 ), // E (47)  
-        vec4( 3,  0.1, -2, 1.0 ), // F (48) 
-        vec4( -2.5,-0.7, -2, 1.0 ), // G (49) 
-        vec4( 2.5, -0.7, -2, 1.0 ),  // H (50) 
+        vec4(6.3,  0,  1, 1.0 ),  // A (43) 
+        vec4( 11,  0.1,  1, 1.0 ),  // B (44)  
+        vec4(6.5, -0.7,  1, 1.0 ),  // C (45)  
+        vec4( 10.5, -0.7,  1, 1.0 ), // D (46)  
+        vec4( 6.3, 0, -2, 1.0 ), // E (47)  
+        vec4( 11,  0.1, -2, 1.0 ), // F (48) 
+        vec4( 6.5,-0.7, -2, 1.0 ), // G (49) 
+        vec4( 10.5, -0.7, -2, 1.0 ),  // H (50) 
 
         // car2 trapezoid
-        vec4(0,  0.7,  1, 1.0 ),  // I(51)
-        vec4( 2,  0.7,  1, 1.0 ),  // J(52)
-        vec4(-1, 0,  1, 1.0 ),  // K(53)
-        vec4( 3, 0.1,  1, 1.0 ), // L(54)
-        vec4( 0, 0.7, -2, 1.0 ), // M(55)
-        vec4( 2,  0.7, -2, 1.0 ), // N(56)
-        vec4( -1,0, -2, 1.0 ),  // O(57)
-        vec4( 3, 0.1, -2, 1.0 ),  // P(58)
+        vec4(8,  0.7,  1, 1.0 ),  // I(51)
+        vec4( 10,  0.7,  1, 1.0 ),  // J(52)
+        vec4(7, 0,  1, 1.0 ),  // K(53)
+        vec4( 11, 0.1,  1, 1.0 ), // L(54)
+        vec4( 8, 0.7, -2, 1.0 ), // M(55)
+        vec4( 10,  0.7, -2, 1.0 ), // N(56)
+        vec4( 7,0, -2, 1.0 ),  // O(57)
+        vec4( 11, 0.1, -2, 1.0 ),  // P(58)
 
     ];
 
