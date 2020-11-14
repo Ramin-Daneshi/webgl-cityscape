@@ -9,6 +9,7 @@ var numVertices  = 150+120+1152; // 12 vertices for 3D pyramid
 var pointsArray = [];
 var colorsArray = [];
 var normalsArray = [];
+var modelViewStack=[];
 
 // Variables that control the orthographic projection bounds.
 var y_max = 5;
@@ -563,7 +564,7 @@ window.onload = function init() {
     var program = initShaders( gl, "vertex-shader", "fragment-shader" );
     gl.useProgram( program );
 
-    //GenerateCar();  // generate the points for the car and floor
+    GenerateCar();  // generate the points for the car and floor
     GenerateTower(); // generate the points for the tower
     SurfaceRevPoints(); // generate pawn
 
@@ -645,6 +646,18 @@ window.onload = function init() {
 }
 
 
+function DrawCars() {
+    var s, r, t;
+
+    modelViewStack.push(modelViewMatrix);
+    t = translate(10, 10, 10);
+    modelViewMatrix = mult(modelViewMatrix, t);
+    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+    gl.drawArrays(gl.TRIANGLES, 0, 72);
+    modelViewMatrix = modelViewStack.pop();
+}
+
+
 var at = vec3(0, 0, 0);
 var up = vec3(0, 1, 0);
 var eye = vec3(2, 2, 2);
@@ -679,7 +692,9 @@ var render = function() {
     modelViewMatrix = lookAt(eye, at, up);
     gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
 
-    gl.drawArrays( gl.TRIANGLES, 0, numVertices );
+    DrawCars();
+
+    gl.drawArrays( gl.TRIANGLES, 72, numVertices-72 );
 }
 
 
