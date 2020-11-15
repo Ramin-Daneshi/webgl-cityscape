@@ -5,6 +5,7 @@
 
 var canvas, gl;
 var N;
+var circleVertices;
 
 var numCircleVertices = 0;
 var numVertices  = 150+120+1152; // 12 vertices for 3D pyramid
@@ -57,14 +58,14 @@ var vertices = [
         vec4( 2.2, 0.1, -2, 1.0 ),  // P (15)  
 
         // floor
-        vec4(-20,  -0.5,  20, 1.0 ),  // A (16) 
-        vec4( 20,  -0.5,  20, 1.0 ),  // B (17)  
-        vec4(-20, -0.6,  20, 1.0 ),  // C (18)  
-        vec4( 20, -0.6,  20, 1.0 ), // D (19)  
-        vec4( -20, -0.5, -20, 1.0 ), // E (20)  
-        vec4( 20,  -0.5, -20, 1.0 ), // F (21) 
-        vec4( -20, -0.6, -20, 1.0 ), // G (22) 
-        vec4( 20, -0.6, -20, 1.0 ),  // H (23) 
+        vec4(-20,  0.0,  20, 1.0 ),  // A (16) 
+        vec4( 20,  0.0,  20, 1.0 ),  // B (17)  
+        vec4(-20, -0.1,  20, 1.0 ),  // C (18)  
+        vec4( 20, -0.1,  20, 1.0 ), // D (19)  
+        vec4( -20, 0.0, -20, 1.0 ), // E (20)  
+        vec4( 20,  0.0, -20, 1.0 ), // F (21) 
+        vec4( -20, -0.1, -20, 1.0 ), // G (22) 
+        vec4( 20, -0.1, -20, 1.0 ),  // H (23) 
 
         // tower
         vec4(-10, -0.5, -16, 1),   // A(24)
@@ -277,7 +278,7 @@ function SurfaceRevPoints()
 
         // for each sweeping step, generate 25 new points corresponding to the original points
 		for(var i = 59; i < 68; i++ ) {	
-		    r = vertices[i][0];
+            r = vertices[i][0];
             vertices.push(vec4(r*Math.cos(angle), vertices[i][1], -r*Math.sin(angle), 1));
 		}    	
 	}
@@ -451,18 +452,19 @@ function Newell(indices)
    return (normalize(vec3(x, y, z)));
 }
 
+
 function HalfCircle()
 {
-    var height=2;
-    var radius=1.5;
-    var num=10;
-    var alpha=Math.PI/num;
+    var height=5;
+    var radius=0.2;
+    var num=100;
+    var alpha=2*Math.PI/num;
 
-    circleVertices = [vec4(0, 0, 0, 1)];
+    circleVertices = [vec4(0, 0, 3, 1)];
     
-    for (var i=num; i>=0; i--)
+    for (var i=0; i<num+1; i++)
     {
-        circleVertices.push(vec4(radius*Math.cos(i*alpha), 0, radius*Math.sin(i*alpha), 1));
+        circleVertices.push(vec4(0+radius*Math.cos(i*alpha), 0, 3+radius*Math.sin(i*alpha), 1));
     }
 
     N = circleVertices.length;
@@ -480,6 +482,38 @@ function HalfCircle()
     ExtrudedShape();
 }
 
+function poleQuad(a, b, c, d) {
+
+    var indices=[a, b, c, d];
+    //var normal = Newell(indices);
+
+    // triangle a-b-c
+    pointsArray.push(circleVertices[a]); 
+    colorsArray.push(vec4( 0.0, 0.0, 1.0, 1.0 ));
+    //normalsArray.push(normal); 
+
+    pointsArray.push(circleVertices[b]); 
+    colorsArray.push(vec4( 0.0, 0.0, 1.0, 1.0 ));
+    //normalsArray.push(normal); 
+
+    pointsArray.push(circleVertices[c]); 
+    colorsArray.push(vec4( 0.0, 0.0, 1.0, 1.0 ));
+    //normalsArray.push(normal);   
+
+    // triangle a-c-d
+    pointsArray.push(circleVertices[a]);  
+    colorsArray.push(vec4( 0.0, 0.0, 1.0, 1.0 ));
+    //normalsArray.push(normal); 
+
+    pointsArray.push(circleVertices[c]); 
+    colorsArray.push(vec4( 0.0, 0.0, 1.0, 1.0 ));
+    //normalsArray.push(normal); 
+
+    pointsArray.push(circleVertices[d]); 
+    colorsArray.push(vec4( 0.0, 0.0, 1.0, 1.0 ));
+    //normalsArray.push(normal);    
+}
+
 function ExtrudedShape()
 {
     var basePoints=[];
@@ -489,7 +523,7 @@ function ExtrudedShape()
     // add the side faces first --> N quads
     for (var j=0; j<N; j++)
     {
-        pawnQuad(j, j+N, (j+1)%N+N, (j+1)%N);   
+        poleQuad(j, j+N, (j+1)%N+N, (j+1)%N);   
     }
 
     // the first N vertices come from the base 
@@ -525,15 +559,15 @@ function polygon(indices)
     // ...
     for (var i=0; i<M-2; i++)
     {
-        pointsArray.push(vertices[indices[0]]);
+        pointsArray.push(circleVertices[indices[0]]);
         // normalsArray.push(normal);
         colorsArray.push(vec4(1.0,0.0,0.0,1.0));
 
-        pointsArray.push(vertices[indices[prev]]);
+        pointsArray.push(circleVertices[indices[prev]]);
         // normalsArray.push(normal);
         colorsArray.push(vec4(1.0,0.0,0.0,1.0));
 
-        pointsArray.push(vertices[indices[next]]);
+        pointsArray.push(circleVertices[indices[next]]);
         // normalsArray.push(normal);
         colorsArray.push(vec4(1.0,0.0,0.0,1.0));
 
@@ -787,7 +821,7 @@ var render = function() {
     modelViewMatrix = lookAt(eye, at, up);
     gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
 
-    DrawCars();
+    //DrawCars();
 
     gl.drawArrays( gl.TRIANGLES, 0, numVertices );
 }
