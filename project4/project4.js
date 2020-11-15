@@ -4,7 +4,9 @@
 // Due: 11/6/20
 
 var canvas, gl;
+var N;
 
+var numCircleVertices = 0;
 var numVertices  = 150+120+1152; // 12 vertices for 3D pyramid
 var pointsArray = [];
 var colorsArray = [];
@@ -17,6 +19,7 @@ var x_max = 8;
 var x_min = -8;
 var near = -50;
 var far = 50;
+
 
 var modelViewStack=[];
 var modelViewMatrix = mat4();
@@ -448,6 +451,97 @@ function Newell(indices)
    return (normalize(vec3(x, y, z)));
 }
 
+function HalfCircle()
+{
+    var height=2;
+    var radius=1.5;
+    var num=10;
+    var alpha=Math.PI/num;
+
+    circleVertices = [vec4(0, 0, 0, 1)];
+    
+    for (var i=num; i>=0; i--)
+    {
+        circleVertices.push(vec4(radius*Math.cos(i*alpha), 0, radius*Math.sin(i*alpha), 1));
+    }
+
+    N = circleVertices.length;
+    numCircleVertices = 6*N+(N-2)*2*3;
+    numVertices += numCircleVertices;
+
+    // add the second set of points
+    for (var i=0; i<N; i++)
+    {
+        circleVertices.push(vec4(circleVertices[i][0], circleVertices[i][1]+height, circleVertices[i][2], 1));
+    }
+
+    vertices = vertices.concat(vertices, circleVertices);
+
+    ExtrudedShape();
+}
+
+function ExtrudedShape()
+{
+    var basePoints=[];
+    var topPoints=[];
+ 
+    // create the face list 
+    // add the side faces first --> N quads
+    for (var j=0; j<N; j++)
+    {
+        pawnQuad(j, j+N, (j+1)%N+N, (j+1)%N);   
+    }
+
+    // the first N vertices come from the base 
+    basePoints.push(0);
+    for (var i=N-1; i>0; i--)
+    {
+        basePoints.push(i);  // index only
+    }
+    // add the base face as the Nth face
+    polygon(basePoints);
+
+    // the next N vertices come from the top 
+    for (var i=0; i<N; i++)
+    {
+        topPoints.push(i+N); // index only
+    }
+    // add the top face
+    polygon(topPoints);
+}
+
+function polygon(indices)
+{
+    // for indices=[a, b, c, d, e, f, ...]
+    var M=indices.length;
+    var normal=Newell(indices);
+
+    var prev=1;
+    var next=2;
+    // triangles:
+    // a-b-c
+    // a-c-d
+    // a-d-e
+    // ...
+    for (var i=0; i<M-2; i++)
+    {
+        pointsArray.push(vertices[indices[0]]);
+        // normalsArray.push(normal);
+        colorsArray.push(vec4(1.0,0.0,0.0,1.0));
+
+        pointsArray.push(vertices[indices[prev]]);
+        // normalsArray.push(normal);
+        colorsArray.push(vec4(1.0,0.0,0.0,1.0));
+
+        pointsArray.push(vertices[indices[next]]);
+        // normalsArray.push(normal);
+        colorsArray.push(vec4(1.0,0.0,0.0,1.0));
+
+        prev=next;
+        next=next+1;
+    }
+}
+
 // Each face is formed with two triangles
 function GenerateCar() {
     // car bottom
@@ -567,6 +661,7 @@ window.onload = function init() {
     GenerateCar();  // generate the points for the car and floor
     GenerateTower(); // generate the points for the tower
     SurfaceRevPoints(); // generate pawn
+    HalfCircle();
 
     var cBuffer = gl.createBuffer();
     gl.bindBuffer( gl.ARRAY_BUFFER, cBuffer );
@@ -694,7 +789,7 @@ var render = function() {
 
     DrawCars();
 
-    gl.drawArrays( gl.TRIANGLES, 72, numVertices-72 );
+    gl.drawArrays( gl.TRIANGLES, 0, numVertices );
 }
 
 
