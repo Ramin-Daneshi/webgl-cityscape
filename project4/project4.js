@@ -8,7 +8,8 @@ var N;
 var circleVertices;
 
 var numCircleVertices = 0;
-var numVertices  = 150+120+1152; // 12 vertices for 3D pyramid
+var numSquareVertices = 0;
+var numVertices  = 150+120; // 12 vertices for 3D pyramid
 var pointsArray = [];
 var colorsArray = [];
 var normalsArray = [];
@@ -40,12 +41,12 @@ var vertices = [
         // car bottom
         vec4(-1,  0.1,  1, 1.0 ),  // A (0) 
         vec4( 3,  0.1,  1, 1.0 ),  // B (1)  
-        vec4(-1.3, -0.3,  1, 1.0 ),  // C (2)  
-        vec4( 4, -0.3,  1, 1.0 ), // D (3)  
+        vec4(-1.3, -0.6,  1, 1.0 ),  // C (2)  
+        vec4( 4, -0.6,  1, 1.0 ), // D (3)  
         vec4( -1, 0.1, -2, 1.0 ), // E (4)  
         vec4( 3,  0.1, -2, 1.0 ), // F (5) 
-        vec4( -1.3, -0.3, -2, 1.0 ), // G (6) 
-        vec4( 4, -0.3, -2, 1.0 ),  // H (7) 
+        vec4( -1.3, -0.6, -2, 1.0 ), // G (6) 
+        vec4( 4, -0.6, -2, 1.0 ),  // H (7) 
 
         // car top
         vec4(0.5,  0.5,  1, 1.0 ),  // I (8)   
@@ -60,12 +61,12 @@ var vertices = [
         // floor
         vec4(-20,  0.0,  20, 1.0 ),  // A (16) 
         vec4( 20,  0.0,  20, 1.0 ),  // B (17)  
-        vec4(-20, -0.1,  20, 1.0 ),  // C (18)  
-        vec4( 20, -0.1,  20, 1.0 ), // D (19)  
+        vec4(-20, -1,  20, 1.0 ),  // C (18)  
+        vec4( 20, -1,  20, 1.0 ), // D (19)  
         vec4( -20, 0.0, -20, 1.0 ), // E (20)  
         vec4( 20,  0.0, -20, 1.0 ), // F (21) 
-        vec4( -20, -0.1, -20, 1.0 ), // G (22) 
-        vec4( 20, -0.1, -20, 1.0 ),  // H (23) 
+        vec4( -20, -1, -20, 1.0 ), // G (22) 
+        vec4( 20, -1, -20, 1.0 ),  // H (23) 
 
         // tower
         vec4(-10, -0.5, -16, 1),   // A(24)
@@ -126,6 +127,14 @@ var pawnPoints = [
     [0, .525, 0.0],
 ];
 
+var clockPoints = [
+    // clock
+    [0, 0, 0],
+    [3, 0, 0],
+    [2.7, 1, 0],
+    [0, 0.5, 0]
+];
+
 var vertexColors = [
         // car bottom
         vec4( 1.0, 0.0, 0.0, 1.0 ),  // red (0 front)
@@ -184,7 +193,7 @@ var vertexColors = [
         vec4( 1.0, 0.0, 0.0, 1.0 ),  // red (0 front)
         vec4( 0.8, 0.8, 0.2, 1.0 ),  // yellowish-green (1)
         vec4( 0.0, 1.0, 0.0, 1.0 ),  // green (2)
-        vec4( 0.0, 0.0, 1.0, 1.0 ),  // blue (3 right)
+        vec4( 0.5, 0.5, 1.0, 1.0 ),  // blue (3 right)
         vec4( 1.0, 0.0, 1.0, 1.0 ),  // magenta (4)
         vec4( 0.0, 1.0, 1.0, 1.0 ),  // cyan (5 top)
         vec4( 1.0, 1.0, 0.0, 1.0 ),  // yellow (6 left)
@@ -293,14 +302,57 @@ function SurfaceRevPoints()
     // define each quad in counter-clockwise rotation of the vertices
     for (var i=0; i<24; i++) { // slices
         for (var j=59; j<67; j++) { // layers
-            pawnQuad(i*N+j, (i+1)*N+j, (i+1)*N+(j+1), i*N+(j+1)); 
+            quad(i*N+j, (i+1)*N+j, (i+1)*N+(j+1), i*N+(j+1), "pawn", vertices); 
         }
     }    
+
+    numVertices += 1152;
 }
 
+//Sets up the vertices array so the clock can be drawn
+function SurfaceRevPointsClock()
+{
+
+    var clockVertices = [];
+	//Setup initial points matrix
+	for (var i = 0; i<clockPoints.length; i++) {
+		clockVertices.push(vec4(clockPoints[i][0], clockPoints[i][1], clockPoints[i][2], 1));
+	}
+
+	var r;
+    var t=Math.PI/12;
+
+    // sweep the original curve another "angle" degree
+	for (var j = 0; j < 24; j++) {
+        var angle = (j+1)*t; 
+
+        // for each sweeping step, generate 25 new points corresponding to the original points
+		for(var i = 0; i < clockPoints.length; i++ ) {	
+            r = clockVertices[i][0];
+            clockVertices.push(vec4(r*Math.cos(angle), clockVertices[i][1], -r*Math.sin(angle), 1));
+		}    	
+	}
+
+    var N=clockPoints.length; 
+    // quad strips are formed slice by slice (not layer by layer)
+    //          ith slice      (i+1)th slice
+    //            i*N+(j+1)-----(i+1)*N+(j+1)
+    //               |              |
+    //               |              |
+    //            i*N+j --------(i+1)*N+j
+    // define each quad in counter-clockwise rotation of the clockVertices
+    for (var i=0; i<24; i++) { // slices
+        for (var j=0; j<clockPoints.length-1; j++) { // layers
+            quad(i*N+j, (i+1)*N+j, (i+1)*N+(j+1), i*N+(j+1), "pawn", clockVertices); 
+        }
+    }    
+
+    numVertices += 600;
+}
 
 // quad uses first index to set color for face
-function quad(a, b, c, d) {
+function quad(a, b, c, d, type, verts) {
+
 
     // var t1 = subtract(vertices[b], vertices[a]);
     // var t2 = subtract(vertices[c], vertices[b]);
@@ -308,62 +360,41 @@ function quad(a, b, c, d) {
     // var normal = vec3(normal);
     // normal = normalize(normal);
 
-    pointsArray.push(vertices[a]);
-    colorsArray.push(vertexColors[a]); 
+    pointsArray.push(verts[a]);
+    //colorsArray.push(vertexColors[a]); 
     // normalsArray.push(normal); 
     
-    pointsArray.push(vertices[b]); 
-    colorsArray.push(vertexColors[a]);
+    pointsArray.push(verts[b]); 
+    //colorsArray.push(vertexColors[a]);
     // normalsArray.push(normal); 
     
-    pointsArray.push(vertices[c]); 
-    colorsArray.push(vertexColors[a]);
+    pointsArray.push(verts[c]); 
+    //colorsArray.push(vertexColors[a]);
     // normalsArray.push(normal);   
     
-    pointsArray.push(vertices[a]); 
-    colorsArray.push(vertexColors[a]); 
+    pointsArray.push(verts[a]); 
+    //colorsArray.push(vertexColors[a]); 
     // normalsArray.push(normal); 
     
-    pointsArray.push(vertices[c]); 
-    colorsArray.push(vertexColors[a]);
+    pointsArray.push(verts[c]); 
+    //colorsArray.push(vertexColors[a]);
     // normalsArray.push(normal); 
     
-    pointsArray.push(vertices[d]); 
-    colorsArray.push(vertexColors[a]);
+    pointsArray.push(verts[d]); 
+    //colorsArray.push(vertexColors[a]);
     // normalsArray.push(normal);    
+
+    if (type == "square") {
+        for (let i = 0; i < 6; i++) {
+            colorsArray.push(vertexColors[a]); 
+        }
+    } else {
+        for (let i = 0; i < 6; i++) {
+            colorsArray.push(vec4(0.0,0.0,1.0,1.0)); 
+        }
+    } 
 }
 
-function pawnQuad(a, b, c, d) {
-
-    var indices=[a, b, c, d];
-    //var normal = Newell(indices);
-
-    // triangle a-b-c
-    pointsArray.push(vertices[a]); 
-    colorsArray.push(vec4( 0.0, 0.0, 1.0, 1.0 ));
-    //normalsArray.push(normal); 
-
-    pointsArray.push(vertices[b]); 
-    colorsArray.push(vec4( 0.0, 0.0, 1.0, 1.0 ));
-    //normalsArray.push(normal); 
-
-    pointsArray.push(vertices[c]); 
-    colorsArray.push(vec4( 0.0, 0.0, 1.0, 1.0 ));
-    //normalsArray.push(normal);   
-
-    // triangle a-c-d
-    pointsArray.push(vertices[a]);  
-    colorsArray.push(vec4( 0.0, 0.0, 1.0, 1.0 ));
-    //normalsArray.push(normal); 
-
-    pointsArray.push(vertices[c]); 
-    colorsArray.push(vec4( 0.0, 0.0, 1.0, 1.0 ));
-    //normalsArray.push(normal); 
-
-    pointsArray.push(vertices[d]); 
-    colorsArray.push(vec4( 0.0, 0.0, 1.0, 1.0 ));
-    //normalsArray.push(normal);    
-}
 
 function pentagon(a, b, c, d, e) {
 
@@ -453,7 +484,7 @@ function Newell(indices)
 }
 
 
-function HalfCircle()
+function ExtrudedCircle()
 {
     var height=5;
     var radius=0.2;
@@ -477,44 +508,40 @@ function HalfCircle()
         circleVertices.push(vec4(circleVertices[i][0], circleVertices[i][1]+height, circleVertices[i][2], 1));
     }
 
-    vertices = vertices.concat(vertices, circleVertices);
-
-    ExtrudedShape();
+    ExtrudedShape("pole", circleVertices);
 }
 
-function poleQuad(a, b, c, d) {
+function ExtrudedSquare()
+{
+    // for a different extruded object, 
+    // only change these two variables: vertices and height
 
-    var indices=[a, b, c, d];
-    //var normal = Newell(indices);
+    var height=2;
+    squareVertices = [ vec4(0, 0, 0, 1),
+                    vec4(0, 0, 4, 1), 
+                    vec4(0.1, 0, 4, 1),
+                    vec4(0.1, 0, 0, 1)
+                ];
+   
+    N = squareVertices.length;
+    numSquareVertices = 6*N+1*3*2 + 6;
+    numVertices += numSquareVertices;
 
-    // triangle a-b-c
-    pointsArray.push(circleVertices[a]); 
-    colorsArray.push(vec4( 0.0, 0.0, 1.0, 1.0 ));
-    //normalsArray.push(normal); 
+    // add the second set of points
+    for (var i=0; i<N; i++)
+    {
+        squareVertices.push(vec4(squareVertices[i][0], squareVertices[i][1]+height, squareVertices[i][2], 1));
+    }
 
-    pointsArray.push(circleVertices[b]); 
-    colorsArray.push(vec4( 0.0, 0.0, 1.0, 1.0 ));
-    //normalsArray.push(normal); 
+    for (var i=0; i<4; i++)
+    {
+        squareVertices.push(vec4(squareVertices[i][0], squareVertices[i][1]+height, squareVertices[i][2], 1));
+    }
 
-    pointsArray.push(circleVertices[c]); 
-    colorsArray.push(vec4( 0.0, 0.0, 1.0, 1.0 ));
-    //normalsArray.push(normal);   
-
-    // triangle a-c-d
-    pointsArray.push(circleVertices[a]);  
-    colorsArray.push(vec4( 0.0, 0.0, 1.0, 1.0 ));
-    //normalsArray.push(normal); 
-
-    pointsArray.push(circleVertices[c]); 
-    colorsArray.push(vec4( 0.0, 0.0, 1.0, 1.0 ));
-    //normalsArray.push(normal); 
-
-    pointsArray.push(circleVertices[d]); 
-    colorsArray.push(vec4( 0.0, 0.0, 1.0, 1.0 ));
-    //normalsArray.push(normal);    
+    ExtrudedShape("square", squareVertices);
 }
 
-function ExtrudedShape()
+function ExtrudedShape(type, verts)
 {
     var basePoints=[];
     var topPoints=[];
@@ -523,7 +550,7 @@ function ExtrudedShape()
     // add the side faces first --> N quads
     for (var j=0; j<N; j++)
     {
-        poleQuad(j, j+N, (j+1)%N+N, (j+1)%N);   
+        quad(j, j+N, (j+1)%N+N, (j+1)%N, type, verts);   
     }
 
     // the first N vertices come from the base 
@@ -533,7 +560,7 @@ function ExtrudedShape()
         basePoints.push(i);  // index only
     }
     // add the base face as the Nth face
-    polygon(basePoints);
+    polygon(basePoints, verts);
 
     // the next N vertices come from the top 
     for (var i=0; i<N; i++)
@@ -541,10 +568,10 @@ function ExtrudedShape()
         topPoints.push(i+N); // index only
     }
     // add the top face
-    polygon(topPoints);
+    polygon(topPoints, verts);
 }
 
-function polygon(indices)
+function polygon(indices, verts)
 {
     // for indices=[a, b, c, d, e, f, ...]
     var M=indices.length;
@@ -559,15 +586,15 @@ function polygon(indices)
     // ...
     for (var i=0; i<M-2; i++)
     {
-        pointsArray.push(circleVertices[indices[0]]);
+        pointsArray.push(verts[indices[0]]);
         // normalsArray.push(normal);
         colorsArray.push(vec4(1.0,0.0,0.0,1.0));
 
-        pointsArray.push(circleVertices[indices[prev]]);
+        pointsArray.push(verts[indices[prev]]);
         // normalsArray.push(normal);
         colorsArray.push(vec4(1.0,0.0,0.0,1.0));
 
-        pointsArray.push(circleVertices[indices[next]]);
+        pointsArray.push(verts[indices[next]]);
         // normalsArray.push(normal);
         colorsArray.push(vec4(1.0,0.0,0.0,1.0));
 
@@ -580,77 +607,79 @@ function polygon(indices)
 function GenerateCar() {
     // car bottom
     // starts at index 0
-    quad( 0, 1, 3, 2 );  // front(ABDC) red
-    quad( 4, 5, 7, 6 );  // back(EFHG)  magenta
-    quad( 3, 1, 5, 7 );  // right (DBFH) blue
-    quad( 6, 2, 0, 4 );  // left (GCAE) yellow
-    quad( 2, 6, 7, 3 ); // bottom (CGHD) green
-    quad( 5, 4, 0, 1); // top (AEFB) cyan
+    quad( 0, 1, 3, 2, "square", vertices );  // front(ABDC) red
+    quad( 4, 5, 7, 6, "square", vertices  );  // back(EFHG)  magenta
+    quad( 3, 1, 5, 7, "square", vertices  );  // right (DBFH) blue
+    quad( 6, 2, 0, 4, "square", vertices  );  // left (GCAE) yellow
+    quad( 2, 6, 7, 3, "square", vertices  ); // bottom (CGHD) green
+    quad( 5, 4, 0, 1, "square", vertices ); // top (AEFB) cyan
     // ends at index 35
 
     // car top
-    quad( 8, 9, 11, 10 );  // front(IJLK) red
-    quad( 9, 8, 12, 13 );  // back(JIMN)  magenta
-    quad( 12, 13, 15, 14 );  // right (MNPO) blue
-    quad( 10, 8, 12, 14 );  // left (OKIM) yellow   GCAE
-    quad( 11, 10, 14, 15 ); // bottom (LKOP) green
-    quad( 13, 9, 11, 15); // top (NJLP) cyan   HDBF
+    quad( 8, 9, 11, 10, "square", vertices  );  // front(IJLK) red
+    quad( 9, 8, 12, 13, "square", vertices  );  // back(JIMN)  magenta
+    quad( 12, 13, 15, 14, "square", vertices  );  // right (MNPO) blue
+    quad( 10, 8, 12, 14, "square", vertices  );  // left (OKIM) yellow   GCAE
+    quad( 11, 10, 14, 15, "square", vertices  ); // bottom (LKOP) green
+    quad( 13, 9, 11, 15, "square", vertices ); // top (NJLP) cyan   HDBF
     // ends at index 71
 
     // floor
-    quad( 16, 17, 19, 18 );  // front(IJLK) red
-    quad( 17, 16, 20, 21 );  // back(JIMN)  magenta
-    quad( 18, 16, 20, 22 );  // right (MNPO) blue
-    quad( 20, 22, 23, 21 );  // left (OKIM) yellow   GCAE
-    quad( 19, 17, 21, 23 ); // bottom (LKOP) green
-    quad( 19, 18, 22, 23 ); // top (NJLP) cyan   HDBF
+    quad( 16, 17, 19, 18, "square", vertices  );  // front(IJLK) red
+    quad( 17, 16, 20, 21, "square", vertices  );  // back(JIMN)  magenta
+    quad( 18, 16, 20, 22, "square", vertices  );  // right (MNPO) blue
+    quad( 20, 22, 23, 21, "square", vertices  );  // left (OKIM) yellow   GCAE
+    quad( 19, 17, 21, 23, "square", vertices  ); // bottom (LKOP) green
+    quad( 19, 18, 22, 23, "square", vertices  ); // top (NJLP) cyan   HDBF
     // ends at index 107
 
     // car2 bottom
-    quad( 43, 44, 46, 45 );  // front(ABDC) red
-    quad( 47, 48, 50, 49 );  // back(EFHG)  magenta
-    quad( 46, 44, 48, 50 );  // right (DBFH) blue
-    quad( 49, 45, 43, 47 );  // left (GCAE) yellow
-    quad( 45, 49, 50, 46 ); // bottom (CGHD) green
-    quad( 48, 47, 43, 44); // top (AEFB) cyan
+    quad( 43, 44, 46, 45, "square", vertices  );  // front(ABDC) red
+    quad( 47, 48, 50, 49, "square", vertices  );  // back(EFHG)  magenta
+    quad( 46, 44, 48, 50, "square", vertices  );  // right (DBFH) blue
+    quad( 49, 45, 43, 47, "square", vertices  );  // left (GCAE) yellow
+    quad( 45, 49, 50, 46, "square", vertices  ); // bottom (CGHD) green
+    quad( 48, 47, 43, 44, "square", vertices ); // top (AEFB) cyan
     // ends at index 143
 
     // car2 top
-    quad( 51, 52, 54, 53 );  // front(IJLK) red
-    quad( 52, 51, 55, 56 );  // back(JIMN)  magenta
-    quad( 55, 56, 58, 57 );  // right (MNPO) blue
-    quad( 53, 51, 55, 57 );  // left (OKIM) yellow   GCAE
-    quad( 54, 53, 57, 58 ); // bottom (LKOP) green
-    quad( 56, 52, 54, 58); // top (NJLP) cyan   HDBF
+    quad( 51, 52, 54, 53, "square", vertices  );  // front(IJLK) red
+    quad( 52, 51, 55, 56, "square", vertices  );  // back(JIMN)  magenta
+    quad( 55, 56, 58, 57, "square", vertices  );  // right (MNPO) blue
+    quad( 53, 51, 55, 57, "square", vertices  );  // left (OKIM) yellow   GCAE
+    quad( 54, 53, 57, 58, "square", vertices  ); // bottom (LKOP) green
+    quad( 56, 52, 54, 58, "square", vertices ); // top (NJLP) cyan   HDBF
     // ends at index 179
 }
 
 function GenerateTower()
 {
-    // starts at index 108
-    quad(24, 29, 32, 28); // left side
-    quad(24, 25, 30, 29); // bottom
-    quad(29, 30, 31, 32); // front
-    quad(25, 26, 31, 30); // right
-    quad(26, 25, 24, 28); // back
-    // ends at index 138
+    // starts at index 180
+    quad(24, 29, 32, 28, "square", vertices ); // left side
+    quad(24, 25, 30, 29, "square", vertices ); // bottom
+    quad(29, 30, 31, 32, "square", vertices ); // front
+    quad(25, 26, 31, 30, "square", vertices ); // right
+    quad(26, 25, 24, 28, "square", vertices ); // back
+    // ends at index 209
     
     
     triangle(31, 32, 27); // front triangle
     triangle(26, 31, 27);   // right triangle
     triangle(28, 26, 27); // back triangle
     triangle(32, 28, 27); // left triangle
-    // ends at index 150
+    // ends at index 221
 
 
     // tower 2
-    quad(33, 38, 42, 37);
-    quad(36, 37, 42, 41);
-    quad(35, 36, 41, 40);
-    quad(34, 35, 40, 39);
-    quad(33, 34, 39, 38);
+    // starts at index 222
+    quad(33, 38, 42, 37, "square", vertices );
+    quad(36, 37, 42, 41, "square", vertices );
+    quad(35, 36, 41, 40, "square", vertices );
+    quad(34, 35, 40, 39, "square", vertices );
+    quad(33, 34, 39, 38, "square", vertices );
     pentagon (38, 39, 40, 41, 42);
     pentagon (33, 37, 36, 35, 34);
+    // ends at index 269
 }
 
 
@@ -693,9 +722,17 @@ window.onload = function init() {
     gl.useProgram( program );
 
     GenerateCar();  // generate the points for the car and floor
+    console.log(pointsArray.length);
     GenerateTower(); // generate the points for the tower
+    console.log(pointsArray.length);
     SurfaceRevPoints(); // generate pawn
-    HalfCircle();
+    console.log(pointsArray.length);
+    ExtrudedCircle(); // generate pole
+    console.log(pointsArray.length);
+    ExtrudedSquare(); // generate flag
+    console.log(pointsArray.length);
+    SurfaceRevPointsClock(); // generate clock
+    console.log(pointsArray.length);
 
     var cBuffer = gl.createBuffer();
     gl.bindBuffer( gl.ARRAY_BUFFER, cBuffer );
@@ -775,17 +812,136 @@ window.onload = function init() {
 }
 
 
-function DrawCars() {
+function DrawCar1() {
     var s, r, t;
 
     modelViewStack.push(modelViewMatrix);
-    t = translate(10, 10, 10);
-    modelViewMatrix = mult(modelViewMatrix, t);
+    t = translate(10, 2, 8);
+    r = rotate(180,0,1,0);
+    modelViewMatrix = mult(mult(modelViewMatrix, t), r);
     gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
     gl.drawArrays(gl.TRIANGLES, 0, 72);
     modelViewMatrix = modelViewStack.pop();
 }
 
+
+function DrawFloor() {
+    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+    gl.drawArrays(gl.TRIANGLES, 72, 36); 
+}
+
+function DrawCar2() {
+    var s, r, t;
+
+    modelViewStack.push(modelViewMatrix);
+    t = translate(5, 2, 2);
+    modelViewMatrix = mult(modelViewMatrix, t);
+    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+    gl.drawArrays(gl.TRIANGLES, 108, 72);
+    modelViewMatrix = modelViewStack.pop();
+}
+
+function DrawClockTower() {
+    var s, r, t;
+
+    modelViewStack.push(modelViewMatrix);
+    t = translate(13, 0, -3);
+    modelViewMatrix = mult(modelViewMatrix, t);
+    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+    gl.drawArrays(gl.TRIANGLES, 180, 42);
+    modelViewMatrix = modelViewStack.pop();
+}
+
+function DrawOtherTower() {
+    var s, r, t;
+
+    modelViewStack.push(modelViewMatrix);
+    t = translate(12, 0, -8);
+    r = rotate(-90,0,1,0);
+    modelViewMatrix = mult(mult(modelViewMatrix, t), r);
+    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+    gl.drawArrays(gl.TRIANGLES, 222, 48);
+    modelViewMatrix = modelViewStack.pop();
+}
+
+function DrawThruster() {
+    var s, r, t;
+
+    // back right thruster of car 1
+    modelViewStack.push(modelViewMatrix);
+    t = translate(5.8, 1.8, 7.6);
+    r = rotate(-90,0,0,1);
+    s = scale4(12,2,5);
+    modelViewMatrix = mult(mult(mult(modelViewMatrix, t), s), r);
+    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+    gl.drawArrays(gl.TRIANGLES, 270, 1152);
+    modelViewMatrix = modelViewStack.pop();
+
+    // back left thruster of car 1
+    modelViewStack.push(modelViewMatrix);
+    t = translate(5.8, 1.8, 9.3);
+    r = rotate(-90,0,0,1);
+    s = scale4(12,2,5);
+    modelViewMatrix = mult(mult(mult(modelViewMatrix, t), s), r);
+    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+    gl.drawArrays(gl.TRIANGLES, 270, 1152);
+    modelViewMatrix = modelViewStack.pop();
+
+    // back right thruster of car 2
+    modelViewStack.push(modelViewMatrix);
+    t = translate(10.5, 1.7, 2.3);
+    r = rotate(-90,0,0,1);
+    s = scale4(12,2,5);
+    modelViewMatrix = mult(mult(mult(modelViewMatrix, t), s), r);
+    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+    gl.drawArrays(gl.TRIANGLES, 270, 1152);
+    modelViewMatrix = modelViewStack.pop();
+
+    // back left thruster of car 2
+    modelViewStack.push(modelViewMatrix);
+    t = translate(10.5, 1.7, 0.7);
+    r = rotate(-90,0,0,1);
+    s = scale4(12,2,5);
+    modelViewMatrix = mult(mult(mult(modelViewMatrix, t), s), r);
+    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+    gl.drawArrays(gl.TRIANGLES, 270, 1152);
+    modelViewMatrix = modelViewStack.pop();
+}
+
+function DrawPole() {
+    var s, r, t;
+
+    modelViewStack.push(modelViewMatrix);
+    t = translate(0, 0, 14);
+    modelViewMatrix = mult(modelViewMatrix, t);
+    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+    gl.drawArrays(gl.TRIANGLES, 1422, 1212);
+    modelViewMatrix = modelViewStack.pop();
+}
+
+function DrawFlag() {
+    var s, r, t;
+
+    modelViewStack.push(modelViewMatrix);
+    t = translate(0, 2.9, 13);
+    modelViewMatrix = mult(modelViewMatrix, t);
+    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+    gl.drawArrays(gl.TRIANGLES, 2634, 36);
+    modelViewMatrix = modelViewStack.pop();
+}
+
+function DrawClock() {
+    var s, r, t;
+
+    modelViewStack.push(modelViewMatrix);
+    t = translate(6.5, 7, -12);
+    r = rotate(90,1,0,0);
+    s = scale4(1, 0.65, 1);
+    modelViewMatrix = mult(mult(mult(modelViewMatrix, t), s), r);
+    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+    gl.drawArrays(gl.TRIANGLES, 2670, 432);
+    modelViewMatrix = modelViewStack.pop();
+}
 
 var at = vec3(0, 0, 0);
 var up = vec3(0, 1, 0);
@@ -819,11 +975,20 @@ var render = function() {
                 AllInfo.radius*Math.sin(AllInfo.phi));
 
     modelViewMatrix = lookAt(eye, at, up);
-    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+    
 
-    //DrawCars();
+    DrawCar1();
+    DrawFloor();
+    DrawCar2();
+    DrawClockTower();
+    DrawOtherTower();
+    DrawThruster();
+    DrawPole();
+    DrawFlag();
+    DrawClock();
 
-    gl.drawArrays( gl.TRIANGLES, 0, numVertices );
+    //gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+    //gl.drawArrays( gl.TRIANGLES, 2670, numVertices-2670 );
 }
 
 
