@@ -22,6 +22,21 @@ var x_min = -8;
 var near = -50;
 var far = 50;
 
+// light and material
+var lightPosition = vec4(-100.0, -100.0, 100.0, 20.0 );
+var lightAmbient = vec4(0.2, 0.2, 0.2, 1.0 );
+var lightDiffuse = vec4( 1.0, 1.0, 1.0, 1.0 );
+var lightSpecular = vec4( 1.0, 1.0, 1.0, 1.0 );
+
+var materialAmbient = vec4( 1.0, 0.0, 1.0, 1.0 );
+var materialDiffuse = vec4( 1.0, 0.8, 0.0, 1.0);
+var materialSpecular = vec4( 1.0, 0.8, 0.0, 1.0 );
+var materialShininess = 100.0;
+
+var ambientColor, diffuseColor, specularColor;
+
+var ctm;
+
 
 var modelViewStack=[];
 var modelViewMatrix = mat4();
@@ -354,115 +369,115 @@ function SurfaceRevPointsClock()
 function quad(a, b, c, d, type, verts) {
 
 
-    // var t1 = subtract(vertices[b], vertices[a]);
-    // var t2 = subtract(vertices[c], vertices[b]);
-    // var normal = cross(t1, t2);
-    // var normal = vec3(normal);
-    // normal = normalize(normal);
+    var t1 = subtract(verts[b], verts[a]);
+    var t2 = subtract(verts[c], verts[b]);
+    var normal = cross(t1, t2);
+    var normal = vec3(normal);
+    normal = normalize(normal);
 
     pointsArray.push(verts[a]);
     //colorsArray.push(vertexColors[a]); 
-    // normalsArray.push(normal); 
+    normalsArray.push(normal); 
     
     pointsArray.push(verts[b]); 
     //colorsArray.push(vertexColors[a]);
-    // normalsArray.push(normal); 
+    normalsArray.push(normal); 
     
     pointsArray.push(verts[c]); 
     //colorsArray.push(vertexColors[a]);
-    // normalsArray.push(normal);   
+    normalsArray.push(normal);   
     
     pointsArray.push(verts[a]); 
     //colorsArray.push(vertexColors[a]); 
-    // normalsArray.push(normal); 
+    normalsArray.push(normal); 
     
     pointsArray.push(verts[c]); 
     //colorsArray.push(vertexColors[a]);
-    // normalsArray.push(normal); 
+    normalsArray.push(normal); 
     
     pointsArray.push(verts[d]); 
     //colorsArray.push(vertexColors[a]);
-    // normalsArray.push(normal);    
+    normalsArray.push(normal);    
 
-    if (type == "square") {
-        for (let i = 0; i < 6; i++) {
-            colorsArray.push(vertexColors[a]); 
-        }
-    } else {
-        for (let i = 0; i < 6; i++) {
-            colorsArray.push(vec4(0.0,0.0,1.0,1.0)); 
-        }
-    } 
+    // if (type == "square") {
+    //     for (let i = 0; i < 6; i++) {
+    //         colorsArray.push(vertexColors[a]); 
+    //     }
+    // } else {
+    //     for (let i = 0; i < 6; i++) {
+    //         colorsArray.push(vec4(0.0,0.0,1.0,1.0)); 
+    //     }
+    // } 
 }
 
 
 function pentagon(a, b, c, d, e) {
 
-    // var t1 = subtract(vertices[b], vertices[a]);
-    // var t2 = subtract(vertices[c], vertices[b]);
-    // var normal = cross(t1, t2);
-    // var normal = vec3(normal);
-    // normal = normalize(normal);
+    var t1 = subtract(vertices[b], vertices[a]);
+    var t2 = subtract(vertices[c], vertices[b]);
+    var normal = cross(t1, t2);
+    var normal = vec3(normal);
+    normal = normalize(normal);
 
     pointsArray.push(vertices[a]); 
-    colorsArray.push(vertexColors[a]);
-    // normalsArray.push(normal); 
+    // colorsArray.push(vertexColors[a]);
+    normalsArray.push(normal); 
     
     pointsArray.push(vertices[b]); 
-    colorsArray.push(vertexColors[a]);
-    // normalsArray.push(normal); 
+    // colorsArray.push(vertexColors[a]);
+    normalsArray.push(normal); 
     
     pointsArray.push(vertices[c]); 
-    colorsArray.push(vertexColors[a]);
-    // normalsArray.push(normal);   
+    // colorsArray.push(vertexColors[a]);
+    normalsArray.push(normal);   
 
     pointsArray.push(vertices[a]);  
-    colorsArray.push(vertexColors[a]);
-    // normalsArray.push(normal); 
+    // colorsArray.push(vertexColors[a]);
+    normalsArray.push(normal); 
     
     pointsArray.push(vertices[c]); 
-    colorsArray.push(vertexColors[a]);
-    // normalsArray.push(normal); 
+    // colorsArray.push(vertexColors[a]);
+    normalsArray.push(normal); 
     
     pointsArray.push(vertices[d]); 
-    colorsArray.push(vertexColors[a]);
-    // normalsArray.push(normal);    
+    // colorsArray.push(vertexColors[a]);
+    normalsArray.push(normal);    
 
     pointsArray.push(vertices[a]); 
-    colorsArray.push(vertexColors[a]); 
-    // normalsArray.push(normal); 
+    // colorsArray.push(vertexColors[a]); 
+    normalsArray.push(normal); 
     
     pointsArray.push(vertices[d]); 
-    colorsArray.push(vertexColors[a]);
-    // normalsArray.push(normal); 
+    // colorsArray.push(vertexColors[a]);
+    normalsArray.push(normal); 
     
     pointsArray.push(vertices[e]); 
-    colorsArray.push(vertexColors[a]);
-    // normalsArray.push(normal);    
+    // colorsArray.push(vertexColors[a]);
+    normalsArray.push(normal);    
 }
 
 function triangle(a, b, c) {
 
-    // var t1 = subtract(vertices[b], vertices[a]);
-    // var t2 = subtract(vertices[c], vertices[b]);
-    // var normal = cross(t1, t2);
-    // var normal = vec3(normal);
-    // normal = normalize(normal);
+    var t1 = subtract(vertices[b], vertices[a]);
+    var t2 = subtract(vertices[c], vertices[b]);
+    var normal = cross(t1, t2);
+    var normal = vec3(normal);
+    normal = normalize(normal);
 
     pointsArray.push(vertices[a]); 
-    colorsArray.push(vertexColors[a]);
-    // normalsArray.push(normal); 
+    // colorsArray.push(vertexColors[a]);
+    normalsArray.push(normal); 
     
     pointsArray.push(vertices[b]); 
-    colorsArray.push(vertexColors[a]);
-    // normalsArray.push(normal); 
+    // colorsArray.push(vertexColors[a]);
+    normalsArray.push(normal); 
     
     pointsArray.push(vertices[c]); 
-    colorsArray.push(vertexColors[a]);
-    // normalsArray.push(normal);   
+    // colorsArray.push(vertexColors[a]);
+    normalsArray.push(normal);   
 }
 
-function Newell(indices)
+function Newell(indices, verts)
 {
    var L=indices.length;
    var x=0, y=0, z=0;
@@ -472,12 +487,12 @@ function Newell(indices)
        index=indices[i];
        nextIndex = indices[(i+1)%L];
        
-       x += (vertices[index][1] - vertices[nextIndex][1])*
-            (vertices[index][2] + vertices[nextIndex][2]);
-       y += (vertices[index][2] - vertices[nextIndex][2])*
-            (vertices[index][0] + vertices[nextIndex][0]);
-       z += (vertices[index][0] - vertices[nextIndex][0])*
-            (vertices[index][1] + vertices[nextIndex][1]);
+       x += (verts[index][1] - verts[nextIndex][1])*
+            (verts[index][2] + verts[nextIndex][2]);
+       y += (verts[index][2] - verts[nextIndex][2])*
+            (verts[index][0] + verts[nextIndex][0]);
+       z += (verts[index][0] - verts[nextIndex][0])*
+            (verts[index][1] + verts[nextIndex][1]);
    }
 
    return (normalize(vec3(x, y, z)));
@@ -575,7 +590,7 @@ function polygon(indices, verts)
 {
     // for indices=[a, b, c, d, e, f, ...]
     var M=indices.length;
-    var normal=Newell(indices);
+    var normal=Newell(indices, verts);
 
     var prev=1;
     var next=2;
@@ -587,16 +602,16 @@ function polygon(indices, verts)
     for (var i=0; i<M-2; i++)
     {
         pointsArray.push(verts[indices[0]]);
-        // normalsArray.push(normal);
-        colorsArray.push(vec4(1.0,0.0,0.0,1.0));
+        normalsArray.push(normal);
+        // colorsArray.push(vec4(1.0,0.0,0.0,1.0));
 
         pointsArray.push(verts[indices[prev]]);
-        // normalsArray.push(normal);
-        colorsArray.push(vec4(1.0,0.0,0.0,1.0));
+        normalsArray.push(normal);
+        // colorsArray.push(vec4(1.0,0.0,0.0,1.0));
 
         pointsArray.push(verts[indices[next]]);
-        // normalsArray.push(normal);
-        colorsArray.push(vec4(1.0,0.0,0.0,1.0));
+        normalsArray.push(normal);
+        // colorsArray.push(vec4(1.0,0.0,0.0,1.0));
 
         prev=next;
         next=next+1;
@@ -736,11 +751,11 @@ window.onload = function init() {
 
     var cBuffer = gl.createBuffer();
     gl.bindBuffer( gl.ARRAY_BUFFER, cBuffer );
-    gl.bufferData( gl.ARRAY_BUFFER, flatten(colorsArray), gl.STATIC_DRAW );
+    gl.bufferData( gl.ARRAY_BUFFER, flatten(normalsArray), gl.STATIC_DRAW );
 
-    var vColor = gl.getAttribLocation( program, "vColor" );
-    gl.vertexAttribPointer( vColor, 4, gl.FLOAT, false, 0, 0 );
-    gl.enableVertexAttribArray( vColor);
+    var vNormal = gl.getAttribLocation( program, "vNormal" );
+    gl.vertexAttribPointer( vNormal, 3, gl.FLOAT, false, 0, 0 );
+    gl.enableVertexAttribArray( vNormal);
 
     var vBuffer = gl.createBuffer();
     gl.bindBuffer( gl.ARRAY_BUFFER, vBuffer );
@@ -749,6 +764,21 @@ window.onload = function init() {
     var vPosition = gl.getAttribLocation( program, "vPosition" );
     gl.vertexAttribPointer( vPosition, 4, gl.FLOAT, false, 0, 0 );
     gl.enableVertexAttribArray( vPosition );
+
+    ambientProduct = mult(lightAmbient, materialAmbient);
+    diffuseProduct = mult(lightDiffuse, materialDiffuse);
+    specularProduct = mult(lightSpecular, materialSpecular);
+
+    gl.uniform4fv(gl.getUniformLocation(program, "ambientProduct"),
+    flatten(ambientProduct));
+    gl.uniform4fv(gl.getUniformLocation(program, "diffuseProduct"),
+    flatten(diffuseProduct) );
+    gl.uniform4fv(gl.getUniformLocation(program, "specularProduct"), 
+    flatten(specularProduct) );	
+    gl.uniform4fv(gl.getUniformLocation(program, "lightPosition"), 
+    flatten(lightPosition) );
+    
+    gl.uniform1f(gl.getUniformLocation(program, "shininess"),materialShininess);
 
     modelViewMatrixLoc = gl.getUniformLocation( program, "modelViewMatrix" );
     projectionMatrixLoc = gl.getUniformLocation( program, "projectionMatrix" );
