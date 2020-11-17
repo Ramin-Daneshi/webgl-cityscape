@@ -37,6 +37,28 @@ var ambientColor, diffuseColor, specularColor;
 
 var ctm;
 
+// animation
+car1Anim = {
+    animating: false,
+    x: 10,
+    y: 2,
+    z: 8,
+    xrot: 180,
+    yrot: 0,
+    zrot: 1,
+    thrusterx: 5.8,
+};
+
+car2Anim = {
+    animating: false,
+    x: 5,
+    y: 2,
+    z: 8,
+    xrot: 180,
+    yrot: 0,
+    zrot: 1,
+    thrusterx: -0.5,
+}
 
 var modelViewStack=[];
 var modelViewMatrix = mat4();
@@ -836,9 +858,17 @@ window.onload = function init() {
         }
         render();
     });
-    
 
-    render();
+    // Checks if A is pressed
+    document.addEventListener("keypress", function(e) {
+        if (e.keyCode == 97) {
+            car1Anim.animating = !car1Anim.animating;
+            car2Anim.animating = !car2Anim.animating;
+        }
+    });
+    
+    Animator();
+    // render();
 }
 
 
@@ -846,7 +876,7 @@ function DrawCar1() {
     var s, r, t;
 
     modelViewStack.push(modelViewMatrix);
-    t = translate(10, 2, 8);
+    t = translate(car1Anim.x, 2, 8);
     r = rotate(180,0,1,0);
     modelViewMatrix = mult(mult(modelViewMatrix, t), r);
     gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
@@ -864,8 +894,10 @@ function DrawCar2() {
     var s, r, t;
 
     modelViewStack.push(modelViewMatrix);
-    t = translate(5, 2, 2);
-    modelViewMatrix = mult(modelViewMatrix, t);
+    t = translate(car2Anim.x, 2, 2);
+    s = scale4(-1,1,1);
+    modelViewMatrix = mult(mult(modelViewMatrix, t), s);
+    // modelViewMatrix = mult(modelViewMatrix, t);
     gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
     gl.drawArrays(gl.TRIANGLES, 108, 72);
     modelViewMatrix = modelViewStack.pop();
@@ -899,7 +931,7 @@ function DrawThruster() {
 
     // back right thruster of car 1
     modelViewStack.push(modelViewMatrix);
-    t = translate(5.8, 1.8, 7.6);
+    t = translate(car1Anim.thrusterx, 1.8, 7.6);
     r = rotate(-90,0,0,1);
     s = scale4(12,2,5);
     modelViewMatrix = mult(mult(mult(modelViewMatrix, t), s), r);
@@ -909,7 +941,7 @@ function DrawThruster() {
 
     // back left thruster of car 1
     modelViewStack.push(modelViewMatrix);
-    t = translate(5.8, 1.8, 9.3);
+    t = translate(car1Anim.thrusterx, 1.8, 9.3);
     r = rotate(-90,0,0,1);
     s = scale4(12,2,5);
     modelViewMatrix = mult(mult(mult(modelViewMatrix, t), s), r);
@@ -919,8 +951,8 @@ function DrawThruster() {
 
     // back right thruster of car 2
     modelViewStack.push(modelViewMatrix);
-    t = translate(10.5, 1.7, 2.3);
-    r = rotate(-90,0,0,1);
+    t = translate(car2Anim.thrusterx, 1.7, 2.3);
+    r = rotate(90,0,0,1);
     s = scale4(12,2,5);
     modelViewMatrix = mult(mult(mult(modelViewMatrix, t), s), r);
     gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
@@ -929,8 +961,8 @@ function DrawThruster() {
 
     // back left thruster of car 2
     modelViewStack.push(modelViewMatrix);
-    t = translate(10.5, 1.7, 0.7);
-    r = rotate(-90,0,0,1);
+    t = translate(car2Anim.thrusterx, 1.7, 0.7);
+    r = rotate(90,0,0,1);
     s = scale4(12,2,5);
     modelViewMatrix = mult(mult(mult(modelViewMatrix, t), s), r);
     gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
@@ -1021,6 +1053,28 @@ var render = function() {
     //gl.drawArrays( gl.TRIANGLES, 2670, numVertices-2670 );
 }
 
+function Animator() {
+    if (car1Anim.animating && car2Anim.animating) {
+        car1Anim.x -= 1;
+        car1Anim.thrusterx -= 1;
+
+        car2Anim.x += 1;
+        car2Anim.thrusterx += 1;
+
+        if (car1Anim.x === -50) {
+            car1Anim.x = 50;
+            car1Anim.thrusterx =  45.8;
+        };
+
+        if (car2Anim.x === 50) {
+            car2Anim.x = -50;
+            car2Anim.thrusterx = -55.5;
+        }
+
+    }
+     render();
+     requestAnimationFrame(Animator);
+}
 
 function scale4(a, b, c) {
     var result = mat4();
