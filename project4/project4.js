@@ -906,9 +906,19 @@ function DrawCar2() {
 function DrawClockTower() {
     var s, r, t;
 
+    // main clock tower
     modelViewStack.push(modelViewMatrix);
     t = translate(13, 0, -3);
     modelViewMatrix = mult(modelViewMatrix, t);
+    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+    gl.drawArrays(gl.TRIANGLES, 180, 42);
+    modelViewMatrix = modelViewStack.pop();
+
+    // other tower
+    modelViewStack.push(modelViewMatrix);
+    t = translate(5.5, 0, -3);
+    s = scale4(1.1,1.5,1)
+    modelViewMatrix = mult(mult(modelViewMatrix, t), s);
     gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
     gl.drawArrays(gl.TRIANGLES, 180, 42);
     modelViewMatrix = modelViewStack.pop();
@@ -917,10 +927,29 @@ function DrawClockTower() {
 function DrawOtherTower() {
     var s, r, t;
 
+    // main other tower
     modelViewStack.push(modelViewMatrix);
     t = translate(12, 0, -8);
     r = rotate(-90,0,1,0);
     modelViewMatrix = mult(mult(modelViewMatrix, t), r);
+    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+    gl.drawArrays(gl.TRIANGLES, 222, 48);
+    modelViewMatrix = modelViewStack.pop();
+
+    // batman building
+    modelViewStack.push(modelViewMatrix);
+    t = translate(-7, 0, -13);
+    s = scale4(1,1.8,1);
+    modelViewMatrix = mult(mult(modelViewMatrix, t), s);
+    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+    gl.drawArrays(gl.TRIANGLES, 222, 48);
+    modelViewMatrix = modelViewStack.pop();
+
+    // batman building side 2
+    modelViewStack.push(modelViewMatrix);
+    t = translate(-18, 0, -13);
+    s = scale4(-1,1.8,1);
+    modelViewMatrix = mult(mult(modelViewMatrix, t), s);
     gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
     gl.drawArrays(gl.TRIANGLES, 222, 48);
     modelViewMatrix = modelViewStack.pop();
@@ -973,8 +1002,51 @@ function DrawThruster() {
 function DrawPole() {
     var s, r, t;
 
+    // middle close pole
     modelViewStack.push(modelViewMatrix);
     t = translate(0, 0, 14);
+    modelViewMatrix = mult(modelViewMatrix, t);
+    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+    gl.drawArrays(gl.TRIANGLES, 1422, 1212);
+    modelViewMatrix = modelViewStack.pop();
+
+    // left close pole
+    modelViewStack.push(modelViewMatrix);
+    t = translate(-10, 0, 14);
+    modelViewMatrix = mult(modelViewMatrix, t);
+    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+    gl.drawArrays(gl.TRIANGLES, 1422, 1212);
+    modelViewMatrix = modelViewStack.pop();
+
+    // right close pole
+    modelViewStack.push(modelViewMatrix);
+    t = translate(10, 0, 14);
+    modelViewMatrix = mult(modelViewMatrix, t);
+    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+    gl.drawArrays(gl.TRIANGLES, 1422, 1212);
+    modelViewMatrix = modelViewStack.pop();
+
+
+
+    // middle far pole
+    modelViewStack.push(modelViewMatrix);
+    t = translate(0, 0, -11);
+    modelViewMatrix = mult(modelViewMatrix, t);
+    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+    gl.drawArrays(gl.TRIANGLES, 1422, 1212);
+    modelViewMatrix = modelViewStack.pop();
+
+    // left far pole
+    modelViewStack.push(modelViewMatrix);
+    t = translate(-10, 0, -11);
+    modelViewMatrix = mult(modelViewMatrix, t);
+    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+    gl.drawArrays(gl.TRIANGLES, 1422, 1212);
+    modelViewMatrix = modelViewStack.pop();
+
+    // right far pole
+    modelViewStack.push(modelViewMatrix);
+    t = translate(10, 0, -11);
     modelViewMatrix = mult(modelViewMatrix, t);
     gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
     gl.drawArrays(gl.TRIANGLES, 1422, 1212);
@@ -984,8 +1056,51 @@ function DrawPole() {
 function DrawFlag() {
     var s, r, t;
 
+    // middle close flag
     modelViewStack.push(modelViewMatrix);
     t = translate(0, 2.9, 13);
+    modelViewMatrix = mult(modelViewMatrix, t);
+    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+    gl.drawArrays(gl.TRIANGLES, 2634, 36);
+    modelViewMatrix = modelViewStack.pop();
+    
+    // left close flag
+    modelViewStack.push(modelViewMatrix);
+    t = translate(-10, 2.9, 13);
+    modelViewMatrix = mult(modelViewMatrix, t);
+    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+    gl.drawArrays(gl.TRIANGLES, 2634, 36);
+    modelViewMatrix = modelViewStack.pop();
+
+    // right close flag
+    modelViewStack.push(modelViewMatrix);
+    t = translate(10, 2.9, 13);
+    modelViewMatrix = mult(modelViewMatrix, t);
+    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+    gl.drawArrays(gl.TRIANGLES, 2634, 36);
+    modelViewMatrix = modelViewStack.pop();
+
+
+
+    // middle far flag
+    modelViewStack.push(modelViewMatrix);
+    t = translate(0, 2.9, -8);
+    modelViewMatrix = mult(modelViewMatrix, t);
+    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+    gl.drawArrays(gl.TRIANGLES, 2634, 36);
+    modelViewMatrix = modelViewStack.pop();
+
+    // left far flag
+    modelViewStack.push(modelViewMatrix);
+    t = translate(-10, 2.9, -8);
+    modelViewMatrix = mult(modelViewMatrix, t);
+    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+    gl.drawArrays(gl.TRIANGLES, 2634, 36);
+    modelViewMatrix = modelViewStack.pop();
+
+    // right far flag
+    modelViewStack.push(modelViewMatrix);
+    t = translate(10, 2.9, -8);
     modelViewMatrix = mult(modelViewMatrix, t);
     gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
     gl.drawArrays(gl.TRIANGLES, 2634, 36);
@@ -1064,7 +1179,7 @@ function Animator() {
         if (car1Anim.x === -50) {
             car1Anim.x = 50;
             car1Anim.thrusterx =  45.8;
-        };
+        }
 
         if (car2Anim.x === 50) {
             car2Anim.x = -50;
@@ -1072,8 +1187,9 @@ function Animator() {
         }
 
     }
-     render();
-     requestAnimationFrame(Animator);
+    
+    render();
+    requestAnimationFrame(Animator);
 }
 
 function scale4(a, b, c) {
