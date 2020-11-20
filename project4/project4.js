@@ -861,12 +861,61 @@ window.onload = function init() {
 
     // Checks if A is pressed
     document.addEventListener("keypress", function(e) {
-        if (e.keyCode == 97) {
+        if (e.keyCode == 97) { // "a" key
             car1Anim.animating = !car1Anim.animating;
             car2Anim.animating = !car2Anim.animating;
         }
+
+        if (e.keyCode == 98) { // "b" key
+            car1Anim.animating = false;
+            car2Anim.animating = false;
+
+            car1Anim = {
+                animating: false,
+                x: 10,
+                y: 2,
+                z: 8,
+                xrot: 180,
+                yrot: 0,
+                zrot: 1,
+                thrusterx: 5.8,
+            };
+            
+            car2Anim = {
+                animating: false,
+                x: 5,
+                y: 2,
+                z: 8,
+                xrot: 180,
+                yrot: 0,
+                zrot: 1,
+                thrusterx: -0.5,
+            }
+
+            AllInfo = {
+
+                // Camera pan control variables.
+                zoomFactor : 4,
+                translateX : 0,
+                translateY : 0,
+            
+                // Camera rotate control variables.
+                phi : 1,
+                theta : 0.5,
+                radius : 1,
+                dr : 2.0 * Math.PI/180.0,
+            
+                // Mouse control variables
+                mouseDownRight : false,
+                mouseDownLeft : false,
+            
+                mousePosOnClickX : 0,
+                mousePosOnClickY : 0
+            };
+            render();
+        }
     });
-    
+
     Animator();
     // render();
 }
@@ -938,8 +987,8 @@ function DrawOtherTower() {
 
     // batman building
     modelViewStack.push(modelViewMatrix);
-    t = translate(-7, 0, -13);
-    s = scale4(1,1.8,1);
+    t = translate(-7, 0.5, -13);
+    s = scale4(1,1.5,1);
     modelViewMatrix = mult(mult(modelViewMatrix, t), s);
     gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
     gl.drawArrays(gl.TRIANGLES, 222, 48);
@@ -947,8 +996,8 @@ function DrawOtherTower() {
 
     // batman building side 2
     modelViewStack.push(modelViewMatrix);
-    t = translate(-18, 0, -13);
-    s = scale4(-1,1.8,1);
+    t = translate(-18, 0.5, -13);
+    s = scale4(-1,1.5,1);
     modelViewMatrix = mult(mult(modelViewMatrix, t), s);
     gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
     gl.drawArrays(gl.TRIANGLES, 222, 48);
