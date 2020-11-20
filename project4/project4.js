@@ -14,6 +14,8 @@ var pointsArray = [];
 var colorsArray = [];
 var normalsArray = [];
 
+var sounds = []; // used to store sounds
+
 // Variables that control the orthographic projection bounds.
 var y_max = 5;
 var y_min = -5;
@@ -864,11 +866,20 @@ window.onload = function init() {
         if (e.keyCode == 97) { // "a" key
             car1Anim.animating = !car1Anim.animating;
             car2Anim.animating = !car2Anim.animating;
+            if (car1Anim.animating == false) {
+                sounds[0].pause();
+                sounds[0].currentTime = 0;
+            } else {
+                sounds[0].play();
+            }
         }
 
         if (e.keyCode == 98) { // "b" key
             car1Anim.animating = false;
             car2Anim.animating = false;
+
+            sounds[0].pause();
+            sounds[0].currentTime = 0;
 
             car1Anim = {
                 animating: false,
@@ -915,6 +926,9 @@ window.onload = function init() {
             render();
         }
     });
+
+    // load sounds
+    sounds.push(new Audio("Perfect_Morning.mp3"));
 
     Animator();
     // render();
