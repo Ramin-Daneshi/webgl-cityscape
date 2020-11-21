@@ -3,7 +3,7 @@
 // Class: CSCI 4250
 // Due: 11/6/20
 
-var canvas, gl;
+var canvas, gl, program;
 var N;
 var circleVertices;
 
@@ -757,7 +757,7 @@ window.onload = function init() {
     gl.enable(gl.DEPTH_TEST);
 
     //  Load shaders and initialize attribute buffers
-    var program = initShaders( gl, "vertex-shader", "fragment-shader" );
+    program = initShaders( gl, "vertex-shader", "fragment-shader" );
     gl.useProgram( program );
 
     GenerateCar();  // generate the points for the car and floor
@@ -939,6 +939,14 @@ function DrawCar1() {
     var s, r, t;
 
     modelViewStack.push(modelViewMatrix);
+    materialAmbient = vec4( 1.0, 0.0, 0.0, 1.0 );
+    materialDiffuse = vec4( 1.0, 0.0, 0.0, 1.0);
+    ambientProduct = mult(lightAmbient, materialAmbient);
+    diffuseProduct = mult(lightDiffuse, materialDiffuse);
+    gl.uniform4fv(gl.getUniformLocation(program, "ambientProduct"),
+                    flatten(ambientProduct));
+    gl.uniform4fv(gl.getUniformLocation(program, "diffuseProduct"),
+                    flatten(diffuseProduct) );
     t = translate(car1Anim.x, 2, 8);
     r = rotate(180,0,1,0);
     modelViewMatrix = mult(mult(modelViewMatrix, t), r);
@@ -949,6 +957,14 @@ function DrawCar1() {
 
 
 function DrawFloor() {
+    materialAmbient = vec4( 0.5, 0.5, 0.5, 1.0 );
+    materialDiffuse = vec4( 0.5, 0.5, 0.5, 1.0);
+    ambientProduct = mult(lightAmbient, materialAmbient);
+    diffuseProduct = mult(lightDiffuse, materialDiffuse);
+    gl.uniform4fv(gl.getUniformLocation(program, "ambientProduct"),
+                    flatten(ambientProduct));
+    gl.uniform4fv(gl.getUniformLocation(program, "diffuseProduct"),
+                    flatten(diffuseProduct) );
     gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
     gl.drawArrays(gl.TRIANGLES, 72, 36); 
 }
@@ -957,6 +973,14 @@ function DrawCar2() {
     var s, r, t;
 
     modelViewStack.push(modelViewMatrix);
+    materialAmbient = vec4( 0.0, 0.0, 1.0, 1.0 );
+    materialDiffuse = vec4( 0.0, 0.0, 1.0, 1.0);
+    ambientProduct = mult(lightAmbient, materialAmbient);
+    diffuseProduct = mult(lightDiffuse, materialDiffuse);
+    gl.uniform4fv(gl.getUniformLocation(program, "ambientProduct"),
+                    flatten(ambientProduct));
+    gl.uniform4fv(gl.getUniformLocation(program, "diffuseProduct"),
+                    flatten(diffuseProduct) );
     t = translate(car2Anim.x, 2, 2);
     s = scale4(-1,1,1);
     modelViewMatrix = mult(mult(modelViewMatrix, t), s);
@@ -971,6 +995,14 @@ function DrawClockTower() {
 
     // main clock tower
     modelViewStack.push(modelViewMatrix);
+    materialAmbient = vec4( 0.0, 0.0, 0.0, 1.0 );
+    materialDiffuse = vec4( 0.77, 0.98, 0.97, 1.0);
+    ambientProduct = mult(lightAmbient, materialAmbient);
+    diffuseProduct = mult(lightDiffuse, materialDiffuse);
+    gl.uniform4fv(gl.getUniformLocation(program, "ambientProduct"),
+                    flatten(ambientProduct));
+    gl.uniform4fv(gl.getUniformLocation(program, "diffuseProduct"),
+                    flatten(diffuseProduct) );
     t = translate(13, 0, -3);
     modelViewMatrix = mult(modelViewMatrix, t);
     gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
@@ -979,6 +1011,14 @@ function DrawClockTower() {
 
     // other tower
     modelViewStack.push(modelViewMatrix);
+    materialAmbient = vec4( 0.0, 0.0, 0.0, 1.0 );
+    materialDiffuse = vec4( 0.88, 0.94, 0.8, 1.0);
+    ambientProduct = mult(lightAmbient, materialAmbient);
+    diffuseProduct = mult(lightDiffuse, materialDiffuse);
+    gl.uniform4fv(gl.getUniformLocation(program, "ambientProduct"),
+                    flatten(ambientProduct));
+    gl.uniform4fv(gl.getUniformLocation(program, "diffuseProduct"),
+                    flatten(diffuseProduct) );
     t = translate(5.5, 0, -3);
     s = scale4(1.1,1.5,1)
     modelViewMatrix = mult(mult(modelViewMatrix, t), s);
@@ -989,9 +1029,17 @@ function DrawClockTower() {
 
 function DrawOtherTower() {
     var s, r, t;
-
+    
     // main other tower
     modelViewStack.push(modelViewMatrix);
+    materialAmbient = vec4( 0.0, 0.0, 1.0, 1.0 );
+    materialDiffuse = vec4( 0.78, 0.81, 0.92, 1.0);
+    ambientProduct = mult(lightAmbient, materialAmbient);
+    diffuseProduct = mult(lightDiffuse, materialDiffuse);
+    gl.uniform4fv(gl.getUniformLocation(program, "ambientProduct"),
+                    flatten(ambientProduct));
+    gl.uniform4fv(gl.getUniformLocation(program, "diffuseProduct"),
+                    flatten(diffuseProduct) );
     t = translate(12, 0, -8);
     r = rotate(-90,0,1,0);
     modelViewMatrix = mult(mult(modelViewMatrix, t), r);
@@ -1001,6 +1049,14 @@ function DrawOtherTower() {
 
     // batman building
     modelViewStack.push(modelViewMatrix);
+    materialAmbient = vec4( 0.0, 0.0, 0.0, 1.0 );
+    materialDiffuse = vec4( 1.0, 0.8, 0.7, 1.0);
+    ambientProduct = mult(lightAmbient, materialAmbient);
+    diffuseProduct = mult(lightDiffuse, materialDiffuse);
+    gl.uniform4fv(gl.getUniformLocation(program, "ambientProduct"),
+                    flatten(ambientProduct));
+    gl.uniform4fv(gl.getUniformLocation(program, "diffuseProduct"),
+                    flatten(diffuseProduct) );
     t = translate(-7, 0.5, -13);
     s = scale4(1,1.5,1);
     modelViewMatrix = mult(mult(modelViewMatrix, t), s);
@@ -1023,6 +1079,14 @@ function DrawThruster() {
 
     // back right thruster of car 1
     modelViewStack.push(modelViewMatrix);
+    materialAmbient = vec4( 1.0, 1.0, 1.0, 1.0 );
+    materialDiffuse = vec4( 1.0, 0.7, 0.0, 1.0);
+    ambientProduct = mult(lightAmbient, materialAmbient);
+    diffuseProduct = mult(lightDiffuse, materialDiffuse);
+    gl.uniform4fv(gl.getUniformLocation(program, "ambientProduct"),
+                    flatten(ambientProduct));
+    gl.uniform4fv(gl.getUniformLocation(program, "diffuseProduct"),
+                    flatten(diffuseProduct) );
     t = translate(car1Anim.thrusterx, 1.8, 7.6);
     r = rotate(-90,0,0,1);
     s = scale4(12,2,5);
@@ -1067,15 +1131,15 @@ function DrawPole() {
 
     // middle close pole
     modelViewStack.push(modelViewMatrix);
+    materialAmbient = vec4( 1.0, 1.0, 1.0, 1.0 );
+    materialDiffuse = vec4( 1.0, 0.7, 0.0, 1.0);
+    ambientProduct = mult(lightAmbient, materialAmbient);
+    diffuseProduct = mult(lightDiffuse, materialDiffuse);
+    gl.uniform4fv(gl.getUniformLocation(program, "ambientProduct"),
+                    flatten(ambientProduct));
+    gl.uniform4fv(gl.getUniformLocation(program, "diffuseProduct"),
+                    flatten(diffuseProduct) );
     t = translate(0, 0, 14);
-    modelViewMatrix = mult(modelViewMatrix, t);
-    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
-    gl.drawArrays(gl.TRIANGLES, 1422, 1212);
-    modelViewMatrix = modelViewStack.pop();
-
-    // left close pole
-    modelViewStack.push(modelViewMatrix);
-    t = translate(-10, 0, 14);
     modelViewMatrix = mult(modelViewMatrix, t);
     gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
     gl.drawArrays(gl.TRIANGLES, 1422, 1212);
@@ -1089,19 +1153,9 @@ function DrawPole() {
     gl.drawArrays(gl.TRIANGLES, 1422, 1212);
     modelViewMatrix = modelViewStack.pop();
 
-
-
     // middle far pole
     modelViewStack.push(modelViewMatrix);
     t = translate(0, 0, -11);
-    modelViewMatrix = mult(modelViewMatrix, t);
-    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
-    gl.drawArrays(gl.TRIANGLES, 1422, 1212);
-    modelViewMatrix = modelViewStack.pop();
-
-    // left far pole
-    modelViewStack.push(modelViewMatrix);
-    t = translate(-10, 0, -11);
     modelViewMatrix = mult(modelViewMatrix, t);
     gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
     gl.drawArrays(gl.TRIANGLES, 1422, 1212);
@@ -1114,6 +1168,141 @@ function DrawPole() {
     gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
     gl.drawArrays(gl.TRIANGLES, 1422, 1212);
     modelViewMatrix = modelViewStack.pop();
+
+    
+    
+    
+    // tree log
+    modelViewStack.push(modelViewMatrix);
+    materialAmbient = vec4( 0.0, 0.0, 0.0, 1.0 );
+    materialDiffuse = vec4( 0.65, 0.4, 0.0, 1.0);
+    ambientProduct = mult(lightAmbient, materialAmbient);
+    diffuseProduct = mult(lightDiffuse, materialDiffuse);
+    gl.uniform4fv(gl.getUniformLocation(program, "ambientProduct"),
+                    flatten(ambientProduct));
+    gl.uniform4fv(gl.getUniformLocation(program, "diffuseProduct"),
+                    flatten(diffuseProduct) );
+    t = translate(16, 0, 8);
+    s = scale4(3, 1, 3);
+    modelViewMatrix = mult(mult(modelViewMatrix, t), s);
+    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+    gl.drawArrays(gl.TRIANGLES, 1422, 1212);
+    modelViewMatrix = modelViewStack.pop();
+
+    // tree leaves
+    modelViewStack.push(modelViewMatrix);
+    materialAmbient = vec4( 0.0, 1.0, 0.0, 1.0 );
+    materialDiffuse = vec4( 0.0, 1.0, 0.0, 1.0);
+    ambientProduct = mult(lightAmbient, materialAmbient);
+    diffuseProduct = mult(lightDiffuse, materialDiffuse);
+    gl.uniform4fv(gl.getUniformLocation(program, "ambientProduct"),
+                    flatten(ambientProduct));
+    gl.uniform4fv(gl.getUniformLocation(program, "diffuseProduct"),
+                    flatten(diffuseProduct) );
+    t = translate(20.5, -28, 25.5);
+    s = scale4(0.7, 3, 0.7);
+    modelViewMatrix = mult(mult(modelViewMatrix, t), s);
+    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+    gl.drawArrays(gl.TRIANGLES, 210, 12);
+    modelViewMatrix = modelViewStack.pop();
+
+
+
+
+
+    // power line vertical pole (far)
+    modelViewStack.push(modelViewMatrix);
+    materialAmbient = vec4( 0.0, 0.0, 0.0, 1.0 );
+    materialDiffuse = vec4( 0.65, 0.4, 0.0, 1.0);
+    ambientProduct = mult(lightAmbient, materialAmbient);
+    diffuseProduct = mult(lightDiffuse, materialDiffuse);
+    gl.uniform4fv(gl.getUniformLocation(program, "ambientProduct"),
+                    flatten(ambientProduct));
+    gl.uniform4fv(gl.getUniformLocation(program, "diffuseProduct"),
+                    flatten(diffuseProduct) );
+    t = translate(-10, 0, -17);
+    s = scale4(3, 1.5, 3);
+    modelViewMatrix = mult(mult(modelViewMatrix, t), s);
+    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+    gl.drawArrays(gl.TRIANGLES, 1422, 1212);
+    modelViewMatrix = modelViewStack.pop();
+
+    // power line horizontal pole (far)
+    modelViewStack.push(modelViewMatrix);
+    t = translate(-7, 6.5, -14);
+    r = rotate(90,0,0,1);
+    s = scale4(1.3, 1.3, 2);
+    modelViewMatrix = mult(mult(mult(modelViewMatrix, t), s), r);
+    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+    gl.drawArrays(gl.TRIANGLES, 1422, 1212);
+    modelViewMatrix = modelViewStack.pop();
+
+    // power line vertical pole (close)
+    modelViewStack.push(modelViewMatrix);
+    t = translate(-10, 0, 8);
+    s = scale4(3, 1.5, 3);
+    modelViewMatrix = mult(mult(modelViewMatrix, t), s);
+    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+    gl.drawArrays(gl.TRIANGLES, 1422, 1212);
+    modelViewMatrix = modelViewStack.pop();
+
+    // power line horizontal pole (close)
+    modelViewStack.push(modelViewMatrix);
+    t = translate(-7, 6.5, 11);
+    r = rotate(90,0,0,1);
+    s = scale4(1.3, 1.3, 2);
+    modelViewMatrix = mult(mult(mult(modelViewMatrix, t), s), r);
+    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+    gl.drawArrays(gl.TRIANGLES, 1422, 1212);
+    modelViewMatrix = modelViewStack.pop();
+
+    // power line wire (close right)
+    modelViewStack.push(modelViewMatrix);
+    materialAmbient = vec4( 0.0, 0.0, 0.0, 1.0 );
+    materialDiffuse = vec4( 0.0, 0.0, 0.0, 1.0);
+    ambientProduct = mult(lightAmbient, materialAmbient);
+    diffuseProduct = mult(lightDiffuse, materialDiffuse);
+    gl.uniform4fv(gl.getUniformLocation(program, "ambientProduct"),
+                    flatten(ambientProduct));
+    gl.uniform4fv(gl.getUniformLocation(program, "diffuseProduct"),
+                    flatten(diffuseProduct) );
+    t = translate(-9, 8, -8);
+    r = rotate(90,1,0,0);
+    s = scale4(0.5, 0.5, 5);
+    modelViewMatrix = mult(mult(mult(modelViewMatrix, t), s), r);
+    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+    gl.drawArrays(gl.TRIANGLES, 1422, 1212);
+    modelViewMatrix = modelViewStack.pop();
+
+    // power line wire (far right)
+    modelViewStack.push(modelViewMatrix);
+    t = translate(-8, 8, -8);
+    r = rotate(90,1,0,0);
+    s = scale4(0.5, 0.5, 5);
+    modelViewMatrix = mult(mult(mult(modelViewMatrix, t), s), r);
+    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+    gl.drawArrays(gl.TRIANGLES, 1422, 1212);
+    modelViewMatrix = modelViewStack.pop();
+
+    // power line wire (close left)
+    modelViewStack.push(modelViewMatrix);
+    t = translate(-11, 8, -8);
+    r = rotate(90,1,0,0);
+    s = scale4(0.5, 0.5, 5);
+    modelViewMatrix = mult(mult(mult(modelViewMatrix, t), s), r);
+    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+    gl.drawArrays(gl.TRIANGLES, 1422, 1212);
+    modelViewMatrix = modelViewStack.pop();
+
+    // power line wire (far left)
+    modelViewStack.push(modelViewMatrix);
+    t = translate(-12, 8, -8);
+    r = rotate(90,1,0,0);
+    s = scale4(0.5, 0.5, 5);
+    modelViewMatrix = mult(mult(mult(modelViewMatrix, t), s), r);
+    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+    gl.drawArrays(gl.TRIANGLES, 1422, 1212);
+    modelViewMatrix = modelViewStack.pop();
 }
 
 function DrawFlag() {
@@ -1121,22 +1310,46 @@ function DrawFlag() {
 
     // middle close flag
     modelViewStack.push(modelViewMatrix);
+    materialAmbient = vec4( 0.0, 0.0, 1.0, 1.0 );
+    materialDiffuse = vec4( 0.0, 0.5, 1.0, 1.0);
+    ambientProduct = mult(lightAmbient, materialAmbient);
+    diffuseProduct = mult(lightDiffuse, materialDiffuse);
+    gl.uniform4fv(gl.getUniformLocation(program, "ambientProduct"),
+                    flatten(ambientProduct));
+    gl.uniform4fv(gl.getUniformLocation(program, "diffuseProduct"),
+                    flatten(diffuseProduct) );
     t = translate(0, 2.9, 13);
     modelViewMatrix = mult(modelViewMatrix, t);
     gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
     gl.drawArrays(gl.TRIANGLES, 2634, 36);
     modelViewMatrix = modelViewStack.pop();
     
-    // left close flag
-    modelViewStack.push(modelViewMatrix);
-    t = translate(-10, 2.9, 13);
-    modelViewMatrix = mult(modelViewMatrix, t);
-    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
-    gl.drawArrays(gl.TRIANGLES, 2634, 36);
-    modelViewMatrix = modelViewStack.pop();
+    // // left close flag
+    // modelViewStack.push(modelViewMatrix);
+    // materialAmbient = vec4( 1.0, 0.0, 0.0, 1.0 );
+    // materialDiffuse = vec4( 1.0, 0.0, 0.0, 1.0);
+    // ambientProduct = mult(lightAmbient, materialAmbient);
+    // diffuseProduct = mult(lightDiffuse, materialDiffuse);
+    // gl.uniform4fv(gl.getUniformLocation(program, "ambientProduct"),
+    //                 flatten(ambientProduct));
+    // gl.uniform4fv(gl.getUniformLocation(program, "diffuseProduct"),
+    //                 flatten(diffuseProduct) );
+    // t = translate(-10, 2.9, 13);
+    // modelViewMatrix = mult(modelViewMatrix, t);
+    // gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+    // gl.drawArrays(gl.TRIANGLES, 2634, 36);
+    // modelViewMatrix = modelViewStack.pop();
 
     // right close flag
     modelViewStack.push(modelViewMatrix);
+    materialAmbient = vec4( 1.0, 0.0, 0.0, 1.0 );
+    materialDiffuse = vec4( 1.0, 0.0, 0.0, 1.0);
+    ambientProduct = mult(lightAmbient, materialAmbient);
+    diffuseProduct = mult(lightDiffuse, materialDiffuse);
+    gl.uniform4fv(gl.getUniformLocation(program, "ambientProduct"),
+                    flatten(ambientProduct));
+    gl.uniform4fv(gl.getUniformLocation(program, "diffuseProduct"),
+                    flatten(diffuseProduct) );
     t = translate(10, 2.9, 13);
     modelViewMatrix = mult(modelViewMatrix, t);
     gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
@@ -1147,22 +1360,46 @@ function DrawFlag() {
 
     // middle far flag
     modelViewStack.push(modelViewMatrix);
+    materialAmbient = vec4( 0.0, 0.0, 1.0, 1.0 );
+    materialDiffuse = vec4( 0.0, 0.5, 1.0, 1.0);
+    ambientProduct = mult(lightAmbient, materialAmbient);
+    diffuseProduct = mult(lightDiffuse, materialDiffuse);
+    gl.uniform4fv(gl.getUniformLocation(program, "ambientProduct"),
+                    flatten(ambientProduct));
+    gl.uniform4fv(gl.getUniformLocation(program, "diffuseProduct"),
+                    flatten(diffuseProduct) );
     t = translate(0, 2.9, -8);
     modelViewMatrix = mult(modelViewMatrix, t);
     gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
     gl.drawArrays(gl.TRIANGLES, 2634, 36);
     modelViewMatrix = modelViewStack.pop();
 
-    // left far flag
-    modelViewStack.push(modelViewMatrix);
-    t = translate(-10, 2.9, -8);
-    modelViewMatrix = mult(modelViewMatrix, t);
-    gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
-    gl.drawArrays(gl.TRIANGLES, 2634, 36);
-    modelViewMatrix = modelViewStack.pop();
+    // // left far flag
+    // modelViewStack.push(modelViewMatrix);
+    // materialAmbient = vec4( 1.0, 0.0, 0.0, 1.0 );
+    // materialDiffuse = vec4( 1.0, 0.0, 0.0, 1.0);
+    // ambientProduct = mult(lightAmbient, materialAmbient);
+    // diffuseProduct = mult(lightDiffuse, materialDiffuse);
+    // gl.uniform4fv(gl.getUniformLocation(program, "ambientProduct"),
+    //                 flatten(ambientProduct));
+    // gl.uniform4fv(gl.getUniformLocation(program, "diffuseProduct"),
+    //                 flatten(diffuseProduct) );
+    // t = translate(-10, 2.9, -8);
+    // modelViewMatrix = mult(modelViewMatrix, t);
+    // gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
+    // gl.drawArrays(gl.TRIANGLES, 2634, 36);
+    // modelViewMatrix = modelViewStack.pop();
 
     // right far flag
     modelViewStack.push(modelViewMatrix);
+    materialAmbient = vec4( 1.0, 0.0, 0.0, 1.0 );
+    materialDiffuse = vec4( 1.0, 0.0, 0.0, 1.0);
+    ambientProduct = mult(lightAmbient, materialAmbient);
+    diffuseProduct = mult(lightDiffuse, materialDiffuse);
+    gl.uniform4fv(gl.getUniformLocation(program, "ambientProduct"),
+                    flatten(ambientProduct));
+    gl.uniform4fv(gl.getUniformLocation(program, "diffuseProduct"),
+                    flatten(diffuseProduct) );
     t = translate(10, 2.9, -8);
     modelViewMatrix = mult(modelViewMatrix, t);
     gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
@@ -1174,6 +1411,14 @@ function DrawClock() {
     var s, r, t;
 
     modelViewStack.push(modelViewMatrix);
+    materialAmbient = vec4( 1.0, 0.0, 0.0, 1.0 );
+    materialDiffuse = vec4( 1.0, 1.0, 0.0, 1.0);
+    ambientProduct = mult(lightAmbient, materialAmbient);
+    diffuseProduct = mult(lightDiffuse, materialDiffuse);
+    gl.uniform4fv(gl.getUniformLocation(program, "ambientProduct"),
+                    flatten(ambientProduct));
+    gl.uniform4fv(gl.getUniformLocation(program, "diffuseProduct"),
+                    flatten(diffuseProduct) );
     t = translate(6.5, 7, -12);
     r = rotate(90,1,0,0);
     s = scale4(1, 0.65, 1);
