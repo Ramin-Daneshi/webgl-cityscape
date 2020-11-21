@@ -1,7 +1,7 @@
 // Author: Ramin Daneshi, Arif Bashar
 // Assignment: Project 4
 // Class: CSCI 4250
-// Due: 11/6/20
+// Due: 11/24/20
 
 var canvas, gl, program;
 var N;
@@ -11,7 +11,6 @@ var numCircleVertices = 0;
 var numSquareVertices = 0;
 var numVertices  = 150+120; // 12 vertices for 3D pyramid
 var pointsArray = [];
-var colorsArray = [];
 var normalsArray = [];
 
 var sounds = []; // used to store sounds
@@ -174,141 +173,6 @@ var clockPoints = [
     [0, 0.5, 0]
 ];
 
-var vertexColors = [
-        // car bottom
-        vec4( 1.0, 0.0, 0.0, 1.0 ),  // red (0 front)
-        vec4( 0.8, 0.8, 0.2, 1.0 ),  // yellowish-green (1)
-        vec4( 0.0, 1.0, 0.0, 1.0 ),  // green (2)
-        vec4( 0.0, 0.0, 1.0, 1.0 ),  // blue (3 right)
-        vec4( 1.0, 0.0, 1.0, 1.0 ),  // magenta (4)
-        vec4( 0.0, 1.0, 1.0, 1.0 ),  // cyan (5 top)
-        vec4( 1.0, 1.0, 0.0, 1.0 ),  // yellow (6 left)
-        vec4( 1.0, 0.0, 0.0, 1.0 ),  // red (7 front)
-
-        // car top
-        vec4( 1.0, 0.0, 0.0, 1.0 ),  // red (0 front)
-        vec4( 0.8, 0.8, 0.2, 1.0 ),  // yellowish-green (1)
-        vec4( 0.0, 1.0, 0.0, 1.0 ),  // green (2)
-        vec4( 0.0, 0.0, 1.0, 1.0 ),  // blue (3 right)
-        vec4( 1.0, 0.0, 1.0, 1.0 ),  // magenta (4)
-        vec4( 0.0, 1.0, 1.0, 1.0 ),  // cyan (5 top)
-        vec4( 1.0, 1.0, 0.0, 1.0 ),  // yellow (6 left) 
-        vec4( 1.0, 0.0, 0.0, 1.0 ),  // red (0 front) 15
-
-        // floor
-        vec4( 1.0, 0.0, 0.0, 1.0 ),  // red (0 front)
-        vec4( 0.5, 0.5, 0.5, 1.0 ),  // yellowish-green (1)
-        vec4( 0.0, 1.0, 0.0, 1.0 ),  // green (2)
-        vec4( 0.0, 0.0, 1.0, 1.0 ),  // blue (3 right)
-        vec4( 1.0, 0.0, 1.0, 1.0 ),  // magenta (4)
-        vec4( 0.0, 1.0, 1.0, 1.0 ),  // cyan (5 top)
-        vec4( 1.0, 1.0, 0.0, 1.0 ),  // yellow (6 left) 
-        vec4( 1.0, 0.0, 0.0, 1.0 ),  // red (0 front) 23
-
-        // tower
-        vec4( 1.0, 0.0, 0.0, 1.0 ),  // red (0 front)
-        vec4( 0.8, 0.8, 0.2, 1.0 ),  // yellowish-green (1)
-        vec4( 0.0, 1.0, 0.0, 1.0 ),  // green (2)
-        vec4( 0.0, 0.0, 1.0, 1.0 ),  // blue (3 right)
-        vec4( 1.0, 0.0, 1.0, 1.0 ),  // magenta (4)
-        vec4( 0.0, 1.0, 1.0, 1.0 ),  // cyan (5 top)
-        vec4( 1.0, 1.0, 0.0, 1.0 ),  // yellow (6 left) 
-        vec4( 1.0, 0.0, 0.0, 1.0 ),  // red (0 front)
-        vec4( 0.8, 0.8, 0.2, 1.0 ),  // yellowish-green (1) 32
-
-        // tower 2
-        vec4( 1.0, 0.0, 0.0, 1.0 ),  // red (0 front)
-        vec4( 0.8, 0.8, 0.2, 1.0 ),  // yellowish-green (1)
-        vec4( 0.0, 1.0, 0.0, 1.0 ),  // green (2)
-        vec4( 0.0, 0.0, 1.0, 1.0 ),  // blue (3 right)
-        vec4( 1.0, 0.0, 1.0, 1.0 ),  // magenta (4)
-        vec4( 0.0, 1.0, 1.0, 1.0 ),  // cyan (5 top)
-        vec4( 1.0, 1.0, 0.0, 1.0 ),  // yellow (6 left) 
-        vec4( 1.0, 0.0, 0.0, 1.0 ),  // red (0 front)
-        vec4( 0.8, 0.8, 0.2, 1.0 ),  // yellowish-green (1)
-        vec4( 0.8, 0.8, 0.2, 1.0 ),  // yellowish-green (1) 42
-
-        // car2 bottom
-        vec4( 1.0, 0.0, 0.0, 1.0 ),  // red (0 front)
-        vec4( 0.8, 0.8, 0.2, 1.0 ),  // yellowish-green (1)
-        vec4( 0.0, 1.0, 0.0, 1.0 ),  // green (2)
-        vec4( 0.5, 0.5, 1.0, 1.0 ),  // blue (3 right)
-        vec4( 1.0, 0.0, 1.0, 1.0 ),  // magenta (4)
-        vec4( 0.0, 1.0, 1.0, 1.0 ),  // cyan (5 top)
-        vec4( 1.0, 1.0, 0.0, 1.0 ),  // yellow (6 left)
-        vec4( 1.0, 0.0, 0.0, 1.0 ),  // red (7 front) 50
-
-        // car2 top
-        vec4( 1.0, 0.0, 0.0, 1.0 ),  // red (0 front)
-        vec4( 0.8, 0.8, 0.2, 1.0 ),  // yellowish-green (1)
-        vec4( 0.0, 1.0, 0.0, 1.0 ),  // green (2)
-        vec4( 0.0, 0.0, 1.0, 1.0 ),  // blue (3 right)
-        vec4( 1.0, 0.0, 1.0, 1.0 ),  // magenta (4)
-        vec4( 0.0, 1.0, 1.0, 1.0 ),  // cyan (5 top)
-        vec4( 1.0, 1.0, 0.0, 1.0 ),  // yellow (6 left) 
-        vec4( 1.0, 0.0, 0.0, 1.0 ),  // red (0 front) 58
-
-        // pawn
-        vec4( 1.0, 0.0, 0.0, 1.0 ),  // red (0 front)
-        vec4( 0.8, 0.8, 0.2, 1.0 ),  // yellowish-green (1)
-        vec4( 0.0, 1.0, 0.0, 1.0 ),  // green (2)
-        vec4( 0.0, 0.0, 1.0, 1.0 ),  // blue (3 right)
-        vec4( 1.0, 0.0, 1.0, 1.0 ),  // magenta (4)
-        vec4( 0.0, 1.0, 1.0, 1.0 ),  // cyan (5 top)
-        vec4( 1.0, 1.0, 0.0, 1.0 ),  // yellow (6 left) 
-        vec4( 1.0, 0.0, 0.0, 1.0 ),  // red (0 front) 58
-        vec4( 1.0, 0.0, 0.0, 1.0 ),  // red (0 front)
-        vec4( 0.8, 0.8, 0.2, 1.0 ),  // yellowish-green (1)
-        vec4( 0.0, 1.0, 0.0, 1.0 ),  // green (2)
-        vec4( 0.0, 0.0, 1.0, 1.0 ),  // blue (3 right)
-        vec4( 1.0, 0.0, 1.0, 1.0 ),  // magenta (4)
-        vec4( 0.0, 1.0, 1.0, 1.0 ),  // cyan (5 top)
-        vec4( 1.0, 1.0, 0.0, 1.0 ),  // yellow (6 left) 
-        vec4( 1.0, 0.0, 0.0, 1.0 ),  // red (0 front) 58
-        vec4( 1.0, 0.0, 0.0, 1.0 ),  // red (0 front)
-        vec4( 0.8, 0.8, 0.2, 1.0 ),  // yellowish-green (1)
-        vec4( 0.0, 1.0, 0.0, 1.0 ),  // green (2)
-        vec4( 0.0, 0.0, 1.0, 1.0 ),  // blue (3 right)
-        vec4( 1.0, 0.0, 1.0, 1.0 ),  // magenta (4)
-        vec4( 0.0, 1.0, 1.0, 1.0 ),  // cyan (5 top)
-        vec4( 1.0, 1.0, 0.0, 1.0 ),  // yellow (6 left) 
-        vec4( 1.0, 0.0, 0.0, 1.0 ),  // red (0 front) 58
-        vec4( 1.0, 0.0, 0.0, 1.0 ),  // red (0 front)
-        vec4( 0.8, 0.8, 0.2, 1.0 ),  // yellowish-green (1)
-        vec4( 0.0, 1.0, 0.0, 1.0 ),  // green (2)
-        vec4( 0.0, 0.0, 1.0, 1.0 ),  // blue (3 right)
-        vec4( 1.0, 0.0, 1.0, 1.0 ),  // magenta (4)
-        vec4( 0.0, 1.0, 1.0, 1.0 ),  // cyan (5 top)
-        vec4( 1.0, 1.0, 0.0, 1.0 ),  // yellow (6 left) 
-        vec4( 1.0, 0.0, 0.0, 1.0 ),  // red (0 front) 58
-        vec4( 0.0, 0.0, 1.0, 1.0 ),  // blue (3 right)
-        vec4( 1.0, 0.0, 1.0, 1.0 ),  // magenta (4)
-        vec4( 0.0, 1.0, 1.0, 1.0 ),  // cyan (5 top)
-        vec4( 1.0, 1.0, 0.0, 1.0 ),  // yellow (6 left) 
-        vec4( 1.0, 0.0, 0.0, 1.0 ),  // red (0 front) 58
-        vec4( 1.0, 0.0, 0.0, 1.0 ),  // red (0 front)
-        vec4( 0.8, 0.8, 0.2, 1.0 ),  // yellowish-green (1)
-        vec4( 0.0, 1.0, 0.0, 1.0 ),  // green (2)
-        vec4( 0.0, 0.0, 1.0, 1.0 ),  // blue (3 right)
-        vec4( 1.0, 0.0, 1.0, 1.0 ),  // magenta (4)
-        vec4( 0.0, 1.0, 1.0, 1.0 ),  // cyan (5 top)
-        vec4( 1.0, 1.0, 0.0, 1.0 ),  // yellow (6 left) 
-        vec4( 1.0, 0.0, 0.0, 1.0 ),  // red (0 front) 58
-        vec4( 0.0, 0.0, 1.0, 1.0 ),  // blue (3 right)
-        vec4( 1.0, 0.0, 1.0, 1.0 ),  // magenta (4)
-        vec4( 0.0, 1.0, 1.0, 1.0 ),  // cyan (5 top)
-        vec4( 1.0, 1.0, 0.0, 1.0 ),  // yellow (6 left) 
-        vec4( 1.0, 0.0, 0.0, 1.0 ),  // red (0 front) 58
-        vec4( 1.0, 0.0, 0.0, 1.0 ),  // red (0 front)
-        vec4( 0.8, 0.8, 0.2, 1.0 ),  // yellowish-green (1)
-        vec4( 0.0, 1.0, 0.0, 1.0 ),  // green (2)
-        vec4( 0.0, 0.0, 1.0, 1.0 ),  // blue (3 right)
-        vec4( 1.0, 0.0, 1.0, 1.0 ),  // magenta (4)
-        vec4( 0.0, 1.0, 1.0, 1.0 ),  // cyan (5 top)
-        vec4( 1.0, 1.0, 0.0, 1.0 ),  // yellow (6 left) 
-        vec4( 1.0, 0.0, 0.0, 1.0 ),  // red (0 front) 58
-    ];
-
 //Sets up the vertices array so the pawn can be drawn
 function SurfaceRevPoints()
 {
@@ -400,38 +264,22 @@ function quad(a, b, c, d, type, verts) {
     normal = normalize(normal);
 
     pointsArray.push(verts[a]);
-    //colorsArray.push(vertexColors[a]); 
     normalsArray.push(normal); 
     
     pointsArray.push(verts[b]); 
-    //colorsArray.push(vertexColors[a]);
     normalsArray.push(normal); 
     
     pointsArray.push(verts[c]); 
-    //colorsArray.push(vertexColors[a]);
     normalsArray.push(normal);   
     
-    pointsArray.push(verts[a]); 
-    //colorsArray.push(vertexColors[a]); 
+    pointsArray.push(verts[a]);  
     normalsArray.push(normal); 
     
     pointsArray.push(verts[c]); 
-    //colorsArray.push(vertexColors[a]);
     normalsArray.push(normal); 
     
     pointsArray.push(verts[d]); 
-    //colorsArray.push(vertexColors[a]);
     normalsArray.push(normal);    
-
-    // if (type == "square") {
-    //     for (let i = 0; i < 6; i++) {
-    //         colorsArray.push(vertexColors[a]); 
-    //     }
-    // } else {
-    //     for (let i = 0; i < 6; i++) {
-    //         colorsArray.push(vec4(0.0,0.0,1.0,1.0)); 
-    //     }
-    // } 
 }
 
 
@@ -444,39 +292,30 @@ function pentagon(a, b, c, d, e) {
     normal = normalize(normal);
 
     pointsArray.push(vertices[a]); 
-    // colorsArray.push(vertexColors[a]);
     normalsArray.push(normal); 
     
     pointsArray.push(vertices[b]); 
-    // colorsArray.push(vertexColors[a]);
     normalsArray.push(normal); 
     
     pointsArray.push(vertices[c]); 
-    // colorsArray.push(vertexColors[a]);
     normalsArray.push(normal);   
 
     pointsArray.push(vertices[a]);  
-    // colorsArray.push(vertexColors[a]);
     normalsArray.push(normal); 
     
     pointsArray.push(vertices[c]); 
-    // colorsArray.push(vertexColors[a]);
     normalsArray.push(normal); 
     
     pointsArray.push(vertices[d]); 
-    // colorsArray.push(vertexColors[a]);
     normalsArray.push(normal);    
 
-    pointsArray.push(vertices[a]); 
-    // colorsArray.push(vertexColors[a]); 
+    pointsArray.push(vertices[a]);  
     normalsArray.push(normal); 
     
     pointsArray.push(vertices[d]); 
-    // colorsArray.push(vertexColors[a]);
     normalsArray.push(normal); 
     
     pointsArray.push(vertices[e]); 
-    // colorsArray.push(vertexColors[a]);
     normalsArray.push(normal);    
 }
 
@@ -489,15 +328,12 @@ function triangle(a, b, c) {
     normal = normalize(normal);
 
     pointsArray.push(vertices[a]); 
-    // colorsArray.push(vertexColors[a]);
     normalsArray.push(normal); 
     
     pointsArray.push(vertices[b]); 
-    // colorsArray.push(vertexColors[a]);
     normalsArray.push(normal); 
     
     pointsArray.push(vertices[c]); 
-    // colorsArray.push(vertexColors[a]);
     normalsArray.push(normal);   
 }
 
@@ -761,17 +597,11 @@ window.onload = function init() {
     gl.useProgram( program );
 
     GenerateCar();  // generate the points for the car and floor
-    console.log(pointsArray.length);
     GenerateTower(); // generate the points for the tower
-    console.log(pointsArray.length);
     SurfaceRevPoints(); // generate pawn
-    console.log(pointsArray.length);
     ExtrudedCircle(); // generate pole
-    console.log(pointsArray.length);
     ExtrudedSquare(); // generate flag
-    console.log(pointsArray.length);
     SurfaceRevPointsClock(); // generate clock
-    console.log(pointsArray.length);
 
     var cBuffer = gl.createBuffer();
     gl.bindBuffer( gl.ARRAY_BUFFER, cBuffer );
@@ -931,7 +761,6 @@ window.onload = function init() {
     sounds.push(new Audio("Perfect_Morning.mp3"));
 
     Animator();
-    // render();
 }
 
 
@@ -984,7 +813,6 @@ function DrawCar2() {
     t = translate(car2Anim.x, 2, 2);
     s = scale4(-1,1,1);
     modelViewMatrix = mult(mult(modelViewMatrix, t), s);
-    // modelViewMatrix = mult(modelViewMatrix, t);
     gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
     gl.drawArrays(gl.TRIANGLES, 108, 72);
     modelViewMatrix = modelViewStack.pop();
@@ -1323,22 +1151,6 @@ function DrawFlag() {
     gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
     gl.drawArrays(gl.TRIANGLES, 2634, 36);
     modelViewMatrix = modelViewStack.pop();
-    
-    // // left close flag
-    // modelViewStack.push(modelViewMatrix);
-    // materialAmbient = vec4( 1.0, 0.0, 0.0, 1.0 );
-    // materialDiffuse = vec4( 1.0, 0.0, 0.0, 1.0);
-    // ambientProduct = mult(lightAmbient, materialAmbient);
-    // diffuseProduct = mult(lightDiffuse, materialDiffuse);
-    // gl.uniform4fv(gl.getUniformLocation(program, "ambientProduct"),
-    //                 flatten(ambientProduct));
-    // gl.uniform4fv(gl.getUniformLocation(program, "diffuseProduct"),
-    //                 flatten(diffuseProduct) );
-    // t = translate(-10, 2.9, 13);
-    // modelViewMatrix = mult(modelViewMatrix, t);
-    // gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
-    // gl.drawArrays(gl.TRIANGLES, 2634, 36);
-    // modelViewMatrix = modelViewStack.pop();
 
     // right close flag
     modelViewStack.push(modelViewMatrix);
@@ -1373,22 +1185,6 @@ function DrawFlag() {
     gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
     gl.drawArrays(gl.TRIANGLES, 2634, 36);
     modelViewMatrix = modelViewStack.pop();
-
-    // // left far flag
-    // modelViewStack.push(modelViewMatrix);
-    // materialAmbient = vec4( 1.0, 0.0, 0.0, 1.0 );
-    // materialDiffuse = vec4( 1.0, 0.0, 0.0, 1.0);
-    // ambientProduct = mult(lightAmbient, materialAmbient);
-    // diffuseProduct = mult(lightDiffuse, materialDiffuse);
-    // gl.uniform4fv(gl.getUniformLocation(program, "ambientProduct"),
-    //                 flatten(ambientProduct));
-    // gl.uniform4fv(gl.getUniformLocation(program, "diffuseProduct"),
-    //                 flatten(diffuseProduct) );
-    // t = translate(-10, 2.9, -8);
-    // modelViewMatrix = mult(modelViewMatrix, t);
-    // gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
-    // gl.drawArrays(gl.TRIANGLES, 2634, 36);
-    // modelViewMatrix = modelViewStack.pop();
 
     // right far flag
     modelViewStack.push(modelViewMatrix);
@@ -1471,9 +1267,6 @@ var render = function() {
     DrawPole();
     DrawFlag();
     DrawClock();
-
-    //gl.uniformMatrix4fv(modelViewMatrixLoc, false, flatten(modelViewMatrix));
-    //gl.drawArrays( gl.TRIANGLES, 2670, numVertices-2670 );
 }
 
 function Animator() {
